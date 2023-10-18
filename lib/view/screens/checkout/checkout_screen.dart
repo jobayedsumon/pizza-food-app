@@ -1310,8 +1310,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             }
             else {
               List<Cart> carts = [];
+              double totalQuantity = 0;
               for (int index = 0; index < _cartList.length; index++) {
                 CartModel cart = _cartList[index];
+                totalQuantity += cart.quantity;
                 List<int> _addOnIdList = [];
                 List<int> _addOnQtyList = [];
                 cart.addOnIds.forEach((addOn) {
@@ -1328,11 +1330,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 ));
               }
 
-              if(order.orderType=="delivery"){
-                AddressModel address = Provider.of<LocationProvider>(context, listen: false).addressList[order.addressIndex];
+              if(order.orderType=="delivery" && order.addressIndex == -1){
+                showCustomSnackBar('Please select an address', context);
+                return;
               }
 
-
+              if(totalQuantity % 1 != 0.00) {
+                showCustomSnackBar('Please complete the Half/Half order.', context);
+                return;
+              }
 
               PlaceOrderBody _placeOrderBody = PlaceOrderBody(
                 cart: carts,
@@ -1341,7 +1347,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 deliveryAddressId: order.orderType=="delivery" ? (Provider.of<LocationProvider>(context, listen: false).addressList[order.addressIndex].id) : 0,
                 //deliveryAddressId: 0,
                 orderAmount: double.parse('${(orderAmount).toStringAsFixed(2)}'),
-                orderNote: _noteController.text ?? '', orderType: widget.orderType,
+                orderNote: _noteController.text ?? '',
+                orderType: order.orderType,
                 paymentMethod: _isCashOnDeliveryActive ? order.paymentMethodIndex == 0 ? 'cash_on_delivery' : null : null,
                 couponCode: widget.couponCode.isNotEmpty ? widget.couponCode : null, distance: order.orderType=="delivery" ? 0 : (order.distance>0?order.distance:0),
                 branchId: _branches[order.branchIndex].id,
@@ -1350,8 +1357,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 delivery_address: order.orderType=="delivery"?convert.jsonEncode(Provider.of<LocationProvider>(context, listen: false).addressList[order.addressIndex].toJson()):"",
                 order_state: 'current',
               );
-
-
 
               if(_isCashOnDeliveryActive && Provider.of<OrderProvider>(context, listen: false).paymentMethodIndex == 0) {
                 order.placeOrder(_placeOrderBody, _callback);
@@ -1435,11 +1440,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 showCustomSnackBar(getTranslated('one_or_more_products_are_not_available_for_this_selected_time', context), context);
               }else if (order.orderType=="delivery" && _kmWiseCharge && order.distance == -1) {
                 showCustomSnackBar(getTranslated('delivery_fee_not_set_yet', context), context);
-              }else if (order.orderType=="delivery" && addressModel.address.length<3) {
-
-                showCustomSnackBar("Delivery address is required", context);
-              }
-              else {
+              } else {
                 /* delivery information */
                 if(addressModel != null && addressModel.address != null &&  order.orderType=="delivery"){
                   if(addressModel.contactPersonName.isEmpty){
@@ -1452,8 +1453,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
 
                 List<Cart> carts = [];
+                double totalQuantity = 0;
                 for (int index = 0; index < _cartList.length; index++) {
                   CartModel cart = _cartList[index];
+                  totalQuantity += cart.quantity;
                   List<int> _addOnIdList = [];
                   List<int> _addOnQtyList = [];
                   cart.addOnIds.forEach((addOn) {
@@ -1470,15 +1473,25 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     cart.discountAmount, cart.quantity, cart.taxAmount, _addOnIdList,_allergiesList, _addOnQtyList,
                   ));
                 }
+
+                if(order.orderType=="delivery" && order.addressIndex == -1){
+                  showCustomSnackBar('Please select an address', context);
+                  return;
+                }
+
+                if(totalQuantity % 1 != 0.00) {
+                  showCustomSnackBar('Please complete the Half/Half order.', context);
+                  return;
+                }
+
                 PlaceOrderGuestBody _placeOrderBody = PlaceOrderGuestBody(
                   cart: carts,
                   couponDiscountAmount: Provider.of<CouponProvider>(context, listen: false).discount,
                   couponDiscountTitle: widget.couponCode.isNotEmpty ? widget.couponCode : null,
-                  //deliveryAddressId: order.orderType=="delivery" ? Provider.of<LocationProvider>(context, listen: false).addressList[order.addressIndex].id : 0,
-                  deliveryAddressId:  0,
+                  deliveryAddressId: order.orderType=="delivery" ? Provider.of<LocationProvider>(context, listen: false).addressList[order.addressIndex].id : 0,
                   orderAmount: double.parse('${(orderAmount).toStringAsFixed(2)}'),
                   orderNote: _noteController.text ?? '',
-                  orderType: widget.orderType??"",
+                  orderType: order.orderType??"",
                   paymentMethod: _isCashOnDeliveryActive ? order.paymentMethodIndex == 0 ? 'cash_on_delivery' : null : null,
                   couponCode: widget.couponCode.isNotEmpty ? widget.couponCode : null,
                   distance: order.orderType=="delivery" ? 0 : order.distance,
@@ -1905,18 +1918,19 @@ class CartListCheckoutWidget extends StatelessWidget {
 
           _availableList.add(DateConverter.isAvailable(cartModel.product.availableTimeStarts, cartModel.product.availableTimeEnds, context));
 
+          double _addOns = 0;
           for(int index=0; index<_addOnList.length; index++) {
             _addOns = _addOns + (_addOnList[index].price * cartModel.addOnIds[index].quantity);
           }
-          _itemPrice = _itemPrice + (cartModel.price * cartModel.quantity);
+          _itemPrice = _itemPrice + (cartModel.quantity * (cartModel.quantity == 0.5 ? HALF_HALF_PRICE : cartModel.price)) + _addOns;
           _discount = _discount + (cartModel.discountAmount * cartModel.quantity);
           _tax = _tax + (cartModel.taxAmount * cartModel.quantity);
         });
-        double _subTotal = _itemPrice + _tax + _addOns;
+        double _subTotal = _itemPrice + _tax;
         double _total = _subTotal - _discount - Provider.of<CouponProvider>(context).discount + deliveryCharge;
         double _totalWithoutDeliveryFee = _subTotal - _discount - Provider.of<CouponProvider>(context).discount;
 
-        double _orderAmount = _itemPrice + _addOns;
+        double _orderAmount = _itemPrice;
         orderAmount = _total;
 
         bool _kmWiseCharge = Provider.of<SplashProvider>(context, listen: false).configModel.deliveryManagement.status == 1;
@@ -2048,17 +2062,17 @@ class CartListCheckoutWidget extends StatelessWidget {
                 ]),
                 SizedBox(height: 10),
 
-                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  Text(getTranslated('tax', context), style: rubikRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
-                  Text('(+) ${PriceConverter.convertPrice(context, _tax)}', style: rubikRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
-                ]),
-                SizedBox(height: 10),
+                // Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                //   Text(getTranslated('tax', context), style: rubikRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
+                //   Text('(+) ${PriceConverter.convertPrice(context, _tax)}', style: rubikRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
+                // ]),
+                // SizedBox(height: 10),
 
-                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  Text(getTranslated('addons', context), style: rubikRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
-                  Text('(+) ${PriceConverter.convertPrice(context, _addOns)}', style: rubikRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
-                ]),
-                SizedBox(height: 10),
+                // Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                //   Text(getTranslated('addons', context), style: rubikRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
+                //   Text('(+) ${PriceConverter.convertPrice(context, _addOns)}', style: rubikRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
+                // ]),
+                // SizedBox(height: 10),
 
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                   Text(getTranslated('discount', context), style: rubikRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),

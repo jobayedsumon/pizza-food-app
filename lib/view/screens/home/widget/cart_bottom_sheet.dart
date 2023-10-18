@@ -9,6 +9,7 @@ import 'package:flutter_restaurant/provider/cart_provider.dart';
 import 'package:flutter_restaurant/provider/product_provider.dart';
 import 'package:flutter_restaurant/provider/splash_provider.dart';
 import 'package:flutter_restaurant/provider/theme_provider.dart';
+import 'package:flutter_restaurant/utill/app_constants.dart';
 import 'package:flutter_restaurant/utill/color_resources.dart';
 import 'package:flutter_restaurant/utill/dimensions.dart';
 import 'package:flutter_restaurant/utill/images.dart';
@@ -121,6 +122,7 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                       break;
                     }
                   }
+                  price = productProvider.quantity == 0.5 ? HALF_HALF_PRICE : price;
                   double priceWithDiscount = PriceConverter.convertWithDiscount(context, price, widget.product.discount, widget.product.discountType);
                   double addonsCost = 0;
                   List<AddOn> _addOnIdList = [];
@@ -164,9 +166,8 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                   _cartIndex = _cartProvider.isExistInCart(
                     widget.product.id, variationType.isEmpty ? null : variationType, false, null,
                   );
-                  print('is exit : $_cartIndex');
 
-                  double priceWithQuantity = priceWithDiscount * productProvider.quantity;
+                  double priceWithQuantity = productProvider.quantity * priceWithDiscount;
                   double priceWithAddons = priceWithQuantity + addonsCost;
 
                   return Container(
@@ -760,12 +761,13 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
                   btnTxt: getTranslated(
                     _cartIndex != -1
                         ? 'update_in_cart'
-                        : 'add_to_cart', context,
+                        :
+                  'add_to_cart', context,
                   ),
                   backgroundColor: Theme.of(context).primaryColor,
                   onTap: () {
                     Navigator.pop(context);
-                    Provider.of<CartProvider>(context, listen: false).addToCart(_cartModel,_cartIndex);
+                    Provider.of<CartProvider>(context, listen: false).addToCart(_cartModel,_cartIndex, context);
                   }
             ),
                 )),
@@ -909,29 +911,48 @@ class _CartBottomSheetState extends State<CartBottomSheet> {
   }
 
   Widget _quantityButton(BuildContext context, CartModel _cartModel) {
+    String categoryId = _cartModel.product.categoryIds.first.id;
     final productProvider = Provider.of<ProductProvider>(context, listen: false);
     return Container(
-      decoration: BoxDecoration(color: Theme.of(context).backgroundColor, borderRadius: BorderRadius.circular(5)),
-      child: Row(children: [
-        InkWell(
-          onTap: () => productProvider.quantity > 1 ?  productProvider.setQuantity(false) : null,
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: Dimensions.PADDING_SIZE_SMALL, vertical: Dimensions.PADDING_SIZE_EXTRA_SMALL),
-            child: Icon(Icons.remove, size: 20),
+      child: Column(
+        children: [
+          categoryId == '1' || categoryId == '6' ?
+          Container(
+            decoration: BoxDecoration(color: productProvider.quantity == 0.5 ? Theme.of(context).primaryColor : Theme.of(context).backgroundColor, borderRadius: BorderRadius.circular(5)),
+            child: InkWell(
+              onTap: () => productProvider.setQuantity(0.5),
+              child: Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: Dimensions.PADDING_SIZE_SMALL, vertical: Dimensions.PADDING_SIZE_EXTRA_SMALL),
+                  child:  Text('Half/Half', style: rubikMedium.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE, color: productProvider.quantity == 0.5 ? Colors.white : Colors.black))
+              ),
+            ),
+          ) : SizedBox(),
+          SizedBox(height: 5),
+          Container(
+            decoration: BoxDecoration(color: Theme.of(context).backgroundColor, borderRadius: BorderRadius.circular(5)),
+            child: Row(children: [
+              InkWell(
+                onTap: () => productProvider.quantity > 1 ?  productProvider.setQuantity(false) : null,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: Dimensions.PADDING_SIZE_SMALL, vertical: Dimensions.PADDING_SIZE_EXTRA_SMALL),
+                  child: Icon(Icons.remove, size: 20),
+                ),
+              ),
+              Text(productProvider.quantity == 0.5 ? 'Half' : productProvider.quantity.toString(), style: rubikMedium.copyWith(fontSize: Dimensions.FONT_SIZE_EXTRA_LARGE)),
+              InkWell(
+                onTap: () => productProvider.setQuantity(true),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: Dimensions.PADDING_SIZE_SMALL, vertical: Dimensions.PADDING_SIZE_EXTRA_SMALL),
+                  child: Icon(Icons.add, size: 20),
+                ),
+              ),
+            ]),
           ),
-        ),
-        Text(productProvider.quantity.toString(), style: rubikMedium.copyWith(fontSize: Dimensions.FONT_SIZE_EXTRA_LARGE)),
-
-        InkWell(
-          onTap: () => productProvider.setQuantity(true),
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: Dimensions.PADDING_SIZE_SMALL, vertical: Dimensions.PADDING_SIZE_EXTRA_SMALL),
-            child: Icon(Icons.add, size: 20),
-          ),
-        ),
-      ]),
+        ],
+      ),
     );
   }
 }

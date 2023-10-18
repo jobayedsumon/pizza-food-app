@@ -99,3 +99,5 @@ class AppConstants {
 String DELIVERYTYPE = "";
 int DeliveryStatus = 1;
 String DELIVERYOPTION = 'delivery';
+
+int HALF_HALF_PRICE = 22;

@@ -59,7 +59,10 @@ class _OrderWebPaymentGuestState extends State<OrderWebPaymentGuest> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getValue();
+    try {
+      getValue();
+    } catch (e) {
+    }
   }
   @override
   Widget build(BuildContext context) {

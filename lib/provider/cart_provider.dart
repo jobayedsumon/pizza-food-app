@@ -4,9 +4,12 @@ import 'package:flutter_restaurant/data/model/response/product_model.dart';
 import 'package:flutter_restaurant/data/repository/cart_repo.dart';
 import 'package:flutter_restaurant/provider/coupon_provider.dart';
 import 'package:flutter_restaurant/provider/order_provider.dart';
+import 'package:flutter_restaurant/utill/app_constants.dart';
 import 'package:flutter_restaurant/utill/routes.dart';
 import 'package:flutter_restaurant/view/screens/checkout/checkout_screen.dart';
 import 'package:provider/provider.dart';
+
+import '../view/base/custom_snackbar.dart';
 
 class CartProvider extends ChangeNotifier {
   final CartRepo cartRepo;
@@ -28,7 +31,15 @@ class CartProvider extends ChangeNotifier {
     });
   }
 
-  void addToCart(CartModel cartModel, int index) {
+  void addToCart(CartModel cartModel, int index, BuildContext context) {
+    double totalQuantity = 0;
+    _cartList.forEach((element) {
+      totalQuantity += element.quantity;
+    });
+    if((totalQuantity % 1) != 0.00 && cartModel.quantity != 0.5) {
+      showCustomSnackBar('Please add the other half of the previous item.', context, isError: true);
+      return;
+    }
     if(index != null && index != -1) {
       _cartList.replaceRange(index, index+1, [cartModel]);
     }else {
@@ -39,6 +50,22 @@ class CartProvider extends ChangeNotifier {
   }
 
   void buyNow(CartModel cartModel, int index,BuildContext context,double _totalWithoutDeliveryFee) {
+    double totalQuantity = 0;
+
+    _cartList.forEach((element) {
+      totalQuantity += element.quantity;
+    });
+
+    if((totalQuantity % 1) != 0.00 && cartModel.quantity != 0.5) {
+      showCustomSnackBar('Please complete the Half/Half order.', context);
+      return;
+    }
+
+    if (cartList.length == 0 && cartModel.quantity == 0.5) {
+      showCustomSnackBar('Please complete the Half/Half order.', context);
+      return;
+    }
+
     if(index != null && index != -1) {
       _cartList.replaceRange(index, index+1, [cartModel]);
     }else {
@@ -55,18 +82,25 @@ class CartProvider extends ChangeNotifier {
 
 
   void setQuantity(
-      {bool isIncrement,
+      {dynamic isIncrement,
       CartModel cart,
       int productIndex,
       bool fromProductView}) {
     int index = fromProductView ? productIndex :  _cartList.indexOf(cart);
-    if (isIncrement) {
-      _cartList[index].quantity = _cartList[index].quantity + 1;
-      _amount = _amount + _cartList[index].discountedPrice;
+
+    if (isIncrement is double) {
+    _cartList[index].quantity = isIncrement;
+    _amount = _amount + (HALF_HALF_PRICE * isIncrement);
     } else {
-      _cartList[index].quantity = _cartList[index].quantity - 1;
-      _amount = _amount - _cartList[index].discountedPrice;
+      if (isIncrement) {
+        _cartList[index].quantity = _cartList[index].quantity + (_cartList[index].quantity == 0.5 ? 0.5 : 1);
+        _amount = _amount + _cartList[index].discountedPrice;
+      } else {
+        _cartList[index].quantity = _cartList[index].quantity - 1;
+        _amount = _amount - _cartList[index].discountedPrice;
+      }
     }
+
     cartRepo.addToCartList(_cartList);
 
     notifyListeners();

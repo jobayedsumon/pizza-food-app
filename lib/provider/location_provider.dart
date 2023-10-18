@@ -122,11 +122,9 @@ class LocationProvider with ChangeNotifier {
     } else {
       String errorMessage;
       if (apiResponse.error is String) {
-        print(apiResponse.error.toString());
         errorMessage = apiResponse.error.toString();
       } else {
         ErrorResponse errorResponse = apiResponse.error;
-        print(errorResponse.errors[0].message);
         errorMessage = errorResponse.errors[0].message;
       }
       callback(false, errorMessage);
@@ -186,11 +184,9 @@ class LocationProvider with ChangeNotifier {
     } else {
       String errorMessage = apiResponse.error.toString();
       if (apiResponse.error is String) {
-        print(apiResponse.error.toString());
         errorMessage = apiResponse.error.toString();
       } else {
         ErrorResponse errorResponse = apiResponse.error;
-        print(errorResponse.errors[0].message);
         errorMessage = errorResponse.errors[0].message;
       }
       responseModel = ResponseModel(false, errorMessage);
@@ -218,11 +214,9 @@ class LocationProvider with ChangeNotifier {
     } else {
       String errorMessage = apiResponse.error.toString();
       if (apiResponse.error is String) {
-        print(apiResponse.error.toString());
         errorMessage = apiResponse.error.toString();
       } else {
         ErrorResponse errorResponse = apiResponse.error;
-        print(errorResponse.errors[0].message);
         errorMessage = errorResponse.errors[0].message;
       }
       responseModel = ResponseModel(false, errorMessage);

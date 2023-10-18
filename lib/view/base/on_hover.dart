@@ -27,12 +27,10 @@ class _OnHoverState extends State<OnHover> {
     // when user exit the mouse pointer from MouseRegion onExit method will work
     return MouseRegion(
       onEnter: (_) {
-        //debugPrint('On Entry hover');
         onEntered(true);
       },
       onExit: (_){
         onEntered(false);
-       // debugPrint('On Exit hover');
       },
       child: AnimatedContainer(
         duration: Duration(milliseconds: 300),

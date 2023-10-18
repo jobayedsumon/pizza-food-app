@@ -53,7 +53,6 @@ class _MainSliderState extends State<MainSlider> {
                       return InkWell(
                         onTap: () {
                           if(banner.bannerList[index].productId != null) {
-                            print('product id : ${banner.bannerList[index].productId }');
                             Product product;
                             for(Product prod in banner.productList) {
                               if(prod.id == banner.bannerList[index].productId) {

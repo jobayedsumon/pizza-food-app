@@ -39,7 +39,6 @@ class OnBoardingProvider with ChangeNotifier {
       _onBoardingList.addAll(apiResponse.response.data);
       notifyListeners();
     } else {
-      print(apiResponse.error.toString());
     }
   }
 }

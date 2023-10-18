@@ -8,6 +8,7 @@ import 'package:flutter_restaurant/provider/cart_provider.dart';
 import 'package:flutter_restaurant/provider/coupon_provider.dart';
 import 'package:flutter_restaurant/provider/splash_provider.dart';
 import 'package:flutter_restaurant/provider/theme_provider.dart';
+import 'package:flutter_restaurant/utill/app_constants.dart';
 import 'package:flutter_restaurant/utill/color_resources.dart';
 import 'package:flutter_restaurant/utill/dimensions.dart';
 import 'package:flutter_restaurant/utill/images.dart';
@@ -43,33 +44,33 @@ class CartProductWidget extends StatelessWidget {
       }
     }
     return InkWell(
-      onTap: () {
-        ResponsiveHelper.isMobile(context)? showModalBottomSheet(
-          context: context,
-          isScrollControlled: true,
-          backgroundColor: Colors.transparent,
-          builder: (con) => CartBottomSheet(
-            product: cart.product,
-            cartIndex: cartIndex,
-            cart: cart,
-            fromCart: true,
-            callback: (CartModel cartModel) {
-              showCustomSnackBar(getTranslated('updated_in_cart', context), context, isError: false);
-            },
-          ),
-        ) :
-        showDialog(context: context, builder: (con) => Dialog(
-          child: CartBottomSheet(
-            product: cart.product,
-            cartIndex: cartIndex,
-            cart: cart,
-            fromCart: true,
-            callback: (CartModel cartModel) {
-              showCustomSnackBar(getTranslated('updated_in_cart', context), context, isError: false);
-            },
-          ),
-        ));
-      },
+      // onTap: () {
+      //   ResponsiveHelper.isMobile(context)? showModalBottomSheet(
+      //     context: context,
+      //     isScrollControlled: true,
+      //     backgroundColor: Colors.transparent,
+      //     builder: (con) => CartBottomSheet(
+      //       product: cart.product,
+      //       cartIndex: cartIndex,
+      //       cart: cart,
+      //       fromCart: true,
+      //       callback: (CartModel cartModel) {
+      //         showCustomSnackBar(getTranslated('updated_in_cart', context), context, isError: false);
+      //       },
+      //     ),
+      //   ) :
+      //   showDialog(context: context, builder: (con) => Dialog(
+      //     child: CartBottomSheet(
+      //       product: cart.product,
+      //       cartIndex: cartIndex,
+      //       cart: cart,
+      //       fromCart: true,
+      //       callback: (CartModel cartModel) {
+      //         showCustomSnackBar(getTranslated('updated_in_cart', context), context, isError: false);
+      //       },
+      //     ),
+      //   ));
+      // },
       child: Container(
         margin: EdgeInsets.only(bottom: Dimensions.PADDING_SIZE_DEFAULT),
         decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(10)),
@@ -131,7 +132,7 @@ class CartProductWidget extends StatelessWidget {
                         Row(children: [
                           Flexible(
                             child: Text(
-                              PriceConverter.convertPrice(context, cart.discountedPrice),
+                              PriceConverter.convertPrice(context, cart.quantity == 0.5 ? HALF_HALF_PRICE * 0.5 : cart.discountedPrice),
                               style: rubikBold,
                             ),
                           ),
@@ -173,8 +174,8 @@ class CartProductWidget extends StatelessWidget {
                         InkWell(
                           onTap: () {
                             Provider.of<CouponProvider>(context, listen: false).removeCouponData(true);
-                            if (cart.quantity > 1) {
-                              Provider.of<CartProvider>(context, listen: false).setQuantity(isIncrement: false, fromProductView: false, cart: cart, productIndex: null);
+                            if (cart.quantity > 0.5) {
+                              Provider.of<CartProvider>(context, listen: false).setQuantity(isIncrement: cart.quantity == 1 ? 0.5 : false, fromProductView: false, cart: cart, productIndex: null);
                             }else {
                               Provider.of<CartProvider>(context, listen: false).removeFromCart(cartIndex);
                             }
@@ -184,7 +185,7 @@ class CartProductWidget extends StatelessWidget {
                             child: Icon(Icons.remove, size: 20),
                           ),
                         ),
-                        Text(cart.quantity.toString(), style: rubikMedium.copyWith(fontSize: Dimensions.FONT_SIZE_EXTRA_LARGE)),
+                        Text(cart.quantity == 0.5 ? 'Half' : cart.quantity.toString(), style: rubikMedium.copyWith(fontSize: Dimensions.FONT_SIZE_DEFAULT)),
                         InkWell(
                           onTap: () {
                             Provider.of<CouponProvider>(context, listen: false).removeCouponData(true);
@@ -195,19 +196,18 @@ class CartProductWidget extends StatelessWidget {
                             child: Icon(Icons.add, size: 20),
                           ),
                         ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: Dimensions.PADDING_SIZE_VERY_SMALL),
+                          child: IconButton(
+                            onPressed: () {
+                              Provider.of<CouponProvider>(context, listen: false).removeCouponData(true);
+                              Provider.of<CartProvider>(context, listen: false).removeFromCart(cartIndex);
+                            },
+                            icon: Icon(Icons.delete, color: Colors.red),
+                          ),
+                        )
                       ]),
                     ),
-
-                    !ResponsiveHelper.isMobile(context) ? Padding(
-                      padding: EdgeInsets.symmetric(horizontal: Dimensions.PADDING_SIZE_VERY_SMALL),
-                      child: IconButton(
-                        onPressed: () {
-                          Provider.of<CouponProvider>(context, listen: false).removeCouponData(true);
-                          Provider.of<CartProvider>(context, listen: false).removeFromCart(cartIndex);
-                        },
-                        icon: Icon(Icons.delete, color: Colors.red),
-                      ),
-                    ) : SizedBox(),
 
                   ]),
 
@@ -258,8 +258,8 @@ class CartProductWidget extends StatelessWidget {
                               ),
                             ),
                             Text(addOns[index].name, style: rubikRegular),
-                            SizedBox(width: 2),
-                            Text(PriceConverter.convertPrice(context, addOns[index].price), style: rubikMedium),
+                            // SizedBox(width: 2),
+                            // Text(PriceConverter.convertPrice(context, addOns[index].price), style: rubikMedium),
                             SizedBox(width: 2),
                             Text('(${cart.addOnIds[index].quantity})', style: rubikRegular),
                           ]),
@@ -360,15 +360,7 @@ class CartProductMenuWidget extends StatelessWidget {
                     children: [
                       Text(cart.product.name, style: rubikMedium, maxLines: 2, overflow: TextOverflow.ellipsis),
                       //!ResponsiveHelper.isMobile(context) ?
-                      Container(
-                        child: IconButton(
-                          onPressed: () {
-                            Provider.of<CouponProvider>(context, listen: false).removeCouponData(true);
-                            Provider.of<CartProvider>(context, listen: false).removeFromCart(cartIndex);
-                          },
-                          icon: Icon(Icons.delete, color: Colors.red,size: 28,),
-                        ),
-                      ) //: SizedBox(),
+                       //: SizedBox(),
                     ],
                   ),
                   Row(children: [
@@ -405,7 +397,7 @@ class CartProductMenuWidget extends StatelessWidget {
                         Row(children: [
                           Flexible(
                             child: Text(
-                              PriceConverter.convertPrice(context, cart.discountedPrice),
+                              PriceConverter.convertPrice(context, cart.quantity == 0.5 ? HALF_HALF_PRICE * 0.5 : cart.discountedPrice),
                               style: rubikBold,
                             ),
                           ),
@@ -451,8 +443,8 @@ class CartProductMenuWidget extends StatelessWidget {
                             //   showCustomSnackBar("Please Update Coupon Again", context);
                             // }
                             Provider.of<CouponProvider>(context, listen: false).removeCouponData(true);
-                            if (cart.quantity > 1) {
-                              Provider.of<CartProvider>(context, listen: false).setQuantity(isIncrement: false, fromProductView: false, cart: cart, productIndex: null);
+                            if (cart.quantity > 0.5) {
+                              Provider.of<CartProvider>(context, listen: false).setQuantity(isIncrement: cart.quantity == 1 ? 0.5 : false, fromProductView: false, cart: cart, productIndex: null);
                             }else {
                               Provider.of<CartProvider>(context, listen: false).removeFromCart(cartIndex);
                             }
@@ -462,7 +454,7 @@ class CartProductMenuWidget extends StatelessWidget {
                             child: Icon(Icons.remove, size: 20),
                           ),
                         ),
-                        Text(cart.quantity.toString(), style: rubikMedium.copyWith(fontSize: Dimensions.FONT_SIZE_EXTRA_LARGE)),
+                        Text(cart.quantity == 0.5 ? 'Half': cart.quantity.toString(), style: rubikMedium.copyWith(fontSize: Dimensions.FONT_SIZE_DEFAULT)),
                         InkWell(
                           onTap: () {
                            /* if( Provider.of<CouponProvider>(context).getCoupon().isNotEmpty){
@@ -475,6 +467,15 @@ class CartProductMenuWidget extends StatelessWidget {
                           child: Padding(
                             padding: EdgeInsets.symmetric(horizontal: Dimensions.PADDING_SIZE_VERY_SMALL, vertical: Dimensions.PADDING_SIZE_EXTRA_SMALL),
                             child: Icon(Icons.add, size: 20),
+                          ),
+                        ),
+                        Container(
+                          child: IconButton(
+                            onPressed: () {
+                              Provider.of<CouponProvider>(context, listen: false).removeCouponData(true);
+                              Provider.of<CartProvider>(context, listen: false).removeFromCart(cartIndex);
+                            },
+                            icon: Icon(Icons.delete, color: Colors.red,size: 28,),
                           ),
                         ),
                       ]),
@@ -529,7 +530,7 @@ class CartProductMenuWidget extends StatelessWidget {
                             ),
                             Text(addOns[index].name, style: rubikRegular),
                             SizedBox(width: 2),
-                            Text(PriceConverter.convertPrice(context, addOns[index].price), style: rubikMedium),
+                            // Text(PriceConverter.convertPrice(context, addOns[index].price), style: rubikMedium),
                             SizedBox(width: 2),
                             Text('(${cart.addOnIds[index].quantity})', style: rubikRegular),
                           ]),
@@ -651,7 +652,7 @@ class CartProductWithoutActionWidget extends StatelessWidget {
                     Row(children: [
                       Flexible(
                         child: Text(
-                          PriceConverter.convertPrice(context, cart.discountedPrice),
+                          PriceConverter.convertPrice(context, cart.quantity == 0.5 ? HALF_HALF_PRICE * 0.5 : cart.discountedPrice),
                           style: rubikBold,
                         ),
                       ),

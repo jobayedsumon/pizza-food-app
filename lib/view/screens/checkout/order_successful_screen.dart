@@ -26,7 +26,6 @@ class _OrderSuccessfulScreenState extends State<OrderSuccessfulScreen> {
   @override
   void initState() {
     super.initState();
-
   }
 
 
@@ -34,8 +33,12 @@ class _OrderSuccessfulScreenState extends State<OrderSuccessfulScreen> {
   Widget build(BuildContext context) {
     final _height = MediaQuery.of(context).size.height;
     if(_isReload && widget.status == 0) {
-      Provider.of<OrderProvider>(context, listen: false).trackOrder(widget.orderID, null, context, false);
-      _isReload = false;
+      try {
+        Provider.of<OrderProvider>(context, listen: false).trackOrder(
+            widget.orderID, null, context, false);
+        _isReload = false;
+      } catch (e) {
+      }
     }
     return Scaffold(
       appBar: ResponsiveHelper.isDesktop(context) ? PreferredSize(child: WebAppBar(), preferredSize: Size.fromHeight(100)) : null,

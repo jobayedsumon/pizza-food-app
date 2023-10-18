@@ -123,7 +123,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                       children: [
                         Expanded(
                           child: Text(
-                            '${searchProvider.searchProductList.length} ${getTranslated('product_found', context)}',
+                            '${searchProvider.searchProductList.length} ${searchProvider.searchProductList.length > 1 ? getTranslated('products_found', context) : getTranslated('product_found', context)}',
                             style: Theme.of(context).textTheme.headline2.copyWith(color: ColorResources.getGreyBunkerColor(context)),
                           ),
                         ),

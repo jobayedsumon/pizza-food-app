@@ -5,6 +5,7 @@ import 'package:flutter_restaurant/helper/price_converter.dart';
 import 'package:flutter_restaurant/localization/language_constrants.dart';
 import 'package:flutter_restaurant/provider/order_provider.dart';
 import 'package:flutter_restaurant/provider/splash_provider.dart';
+import 'package:flutter_restaurant/utill/app_constants.dart';
 import 'package:flutter_restaurant/utill/color_resources.dart';
 import 'package:flutter_restaurant/utill/dimensions.dart';
 import 'package:flutter_restaurant/utill/images.dart';
@@ -186,7 +187,7 @@ class DetailsView extends StatelessWidget {
                                 ),
                               ),
                               Text('${getTranslated('quantity', context)}:', style: rubikRegular),
-                              Text(order.orderDetails[index].quantity.toString(), style: rubikMedium.copyWith(color: Theme.of(context).primaryColor)),
+                              Text(order.orderDetails[index].quantity == 0.5 ? 'Half' : order.orderDetails[index].quantity.toString(), style: rubikMedium.copyWith(color: Theme.of(context).primaryColor)),
                             ],
                           ),
                           SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
@@ -196,7 +197,9 @@ class DetailsView extends StatelessWidget {
                               Flexible(
                                 child: Row(children: [
                                   Text(
-                                    PriceConverter.convertPrice(context, order.orderDetails[index].price - order.orderDetails[index].discountOnProduct),
+                                    PriceConverter.convertPrice(context, (order.orderDetails[index].quantity == 0.5 ?
+                                    HALF_HALF_PRICE * 0.5
+                                        : order.orderDetails[index].price) - order.orderDetails[index].discountOnProduct),
                                     style: rubikBold,
                                   ),
                                   SizedBox(width: 5),
@@ -250,8 +253,8 @@ class DetailsView extends StatelessWidget {
                             child: Row(children: [
                               Text(_addOns[i].name, style: rubikRegular),
                               SizedBox(width: 2),
-                              Text(PriceConverter.convertPrice(context, _addOns[i].price), style: rubikMedium),
-                              SizedBox(width: 2),
+                              // Text(PriceConverter.convertPrice(context, _addOns[i].price), style: rubikMedium),
+                              // SizedBox(width: 2),
                               Text('(${order.orderDetails[index].addOnQtys[i]})', style: rubikRegular),
                             ]),
                           );

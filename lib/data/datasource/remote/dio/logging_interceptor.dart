@@ -5,17 +5,12 @@ class LoggingInterceptor extends InterceptorsWrapper {
 
   @override
   Future onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
-    // print("--> ${options.method} ${options.path}");
-    // print("Headers: ${options.headers.toString()}");
-    // print("<-- END HTTP");
 
     return super.onRequest(options, handler);
   }
 
   @override
   Future onResponse(Response response, ResponseInterceptorHandler handler) async {
-    print(
-        "<-- ${response.statusCode} ${response.requestOptions.method} ${response.requestOptions.path}");
 
     String responseAsString = response.data.toString();
 
@@ -26,20 +21,15 @@ class LoggingInterceptor extends InterceptorsWrapper {
         if (endingIndex > responseAsString.length) {
           endingIndex = responseAsString.length;
         }
-        //print(responseAsString.substring(i * maxCharactersPerLine, endingIndex));
       }
     } else {
-      // print(response.data);
     }
-
-    //print("<-- END HTTP");
 
     return super.onResponse(response, handler);
   }
 
   @override
   Future onError(DioError err, ErrorInterceptorHandler handler) async {
-    //print("ERROR[${err?.response?.statusCode}] => PATH: ${err?.requestOptions?.path}");
     return super.onError(err, handler);
   }
 }

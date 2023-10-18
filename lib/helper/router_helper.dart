@@ -129,7 +129,6 @@ class RouterHelper {
 
   static Handler _dashScreenBoardHandler = Handler(handlerFunc: (context, Map<String, dynamic> params) {
     String para1 = Uri.base.queryParameters["id"];
-    print(para1);
     return _routeHandler(context, DashboardScreen(
       pageIndex: params['page'][0] == 'home'
           ? 0 : params['page'][0] == 'cart'
@@ -199,10 +198,8 @@ class RouterHelper {
   });
 
   static Handler _deshboardHandler = Handler(handlerFunc: (context, Map<String, dynamic> params) {
-    print(params);
     try{
       //List<int> _decode = base64Decode(params['dashboard'][0].replaceAll(' ', '+'));
-      //print(_decode);
       ADDRESSID = params.length>0?(params['dashboard'][0]??"empty"):"empty";
       Provider.of<ProductProvider>(context, listen: false).getDeliveryAddress(
         context,  ADDRESSID, Provider.of<LocalizationProvider>(context, listen: false).locale.languageCode,
@@ -247,7 +244,6 @@ class RouterHelper {
 
   static Handler _orderSuccessHandler = Handler(
       handlerFunc: (context, Map<String, dynamic> params) {
-        print('calling ====>>>>>');
         int _status = (params['status'][0] == 'success' || params['status'][0] == 'payment-success') ? 0 : params['status'][0] == 'fail' ? 1 : 2;
         return _routeHandler(context, OrderSuccessfulScreen(orderID: params['id'][0], status: _status));
       }
@@ -262,16 +258,12 @@ class RouterHelper {
 
   static Handler _orderWebPaymentHandler = Handler(
       handlerFunc: (context, Map<String, dynamic> params) {
-        print("===============token login =================\n");
-        print(params['token'][0]);
         return _routeHandler(context, OrderWebPayment(token: params['token'][0],));
       }
   );
 
   static Handler _orderWebPaymentGuestHandler = Handler(
       handlerFunc: (context, Map<String, dynamic> params) {
-        print("===============token guest =================\n");
-        print(params['token'][0]);
         return _routeHandler(context, OrderWebPaymentGuest(token: params['token'][0],));
       }
   );
@@ -316,8 +308,6 @@ class RouterHelper {
       String _decoded = utf8.decode(base64Url.decode(params['address'][0].replaceAll(' ', '+')));
       _addressModel = AddressModel.fromJson(jsonDecode(_decoded));
     }
-    print('-----------------para---------------------');
-    print(params['type']);
     return _routeHandler(context, AddNewAddressScreen(
 
         fromCheckout: params['page'][0] == 'checkout',
@@ -366,7 +356,6 @@ class RouterHelper {
   );
 
   static Handler _notFoundHandler = Handler(handlerFunc: (context, Map<String, dynamic> params) {
-    print(params);
    // List<int> _decode = base64Decode(params['address'][0].replaceAll(' ', '+'));
    // DeliveryAddress _data = DeliveryAddress.fromJson(jsonDecode(utf8.decode(_decode)));
     return _routeHandler(context, NotFound());

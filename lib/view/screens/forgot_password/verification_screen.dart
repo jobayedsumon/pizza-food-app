@@ -140,7 +140,6 @@ class VerificationScreen extends StatelessWidget {
                                 onTap: () {
                                   String _mail = Provider.of<SplashProvider>(context, listen: false).configModel.phoneVerification
                                       ? emailAddress.contains('+') ? emailAddress : '+'+emailAddress.trim() : emailAddress;
-                                  print('number is : $emailAddress');
                                   if(fromSignUp) {
                                     Provider.of<SplashProvider>(context, listen: false).configModel.emailVerification?
                                     Provider.of<AuthProvider>(context, listen: false).verifyEmail(_mail).then((value) {
@@ -157,7 +156,6 @@ class VerificationScreen extends StatelessWidget {
                                       }
                                     });
                                   }else {
-                                    print('mail num is : $_mail');
 
                                     Provider.of<AuthProvider>(context, listen: false).verifyToken(_mail).then((value) {
                                       if(value.isSuccess) {

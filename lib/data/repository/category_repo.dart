@@ -33,9 +33,6 @@ class CategoryRepo {
 
   Future<ApiResponse> getCategoryProductList(String categoryID, String languageCode, String type) async {
     try {
-      print(categoryID);
-      print(type);
-      print(languageCode);
       final response = await dioClient.get('${AppConstants.CATEGORY_PRODUCT_URI}$categoryID?product_type=$type',
         options: Options(headers: {'X-localization': languageCode}),
       );

@@ -8,6 +8,7 @@ import 'package:flutter_restaurant/localization/language_constrants.dart';
 import 'package:flutter_restaurant/provider/location_provider.dart';
 import 'package:flutter_restaurant/provider/order_provider.dart';
 import 'package:flutter_restaurant/provider/splash_provider.dart';
+import 'package:flutter_restaurant/utill/app_constants.dart';
 import 'package:flutter_restaurant/utill/dimensions.dart';
 import 'package:flutter_restaurant/utill/styles.dart';
 import 'package:flutter_restaurant/view/base/custom_app_bar.dart';
@@ -91,20 +92,19 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
 
 
-                _itemsPrice = _itemsPrice + (orderDetails.price * orderDetails.quantity);
+                _itemsPrice = _itemsPrice + (orderDetails.quantity * (orderDetails.quantity == 0.5 ? HALF_HALF_PRICE : orderDetails.price)) + _addOns;
                 _discount = _discount + (orderDetails.discountOnProduct * orderDetails.quantity);
                 _tax = _tax + (orderDetails.taxAmount * orderDetails.quantity);
               }
             }
 
           }catch(e) {
-            print('order type $e');
           }
           if( order.trackModel != null &&  order.trackModel.extraDiscount!=null) {
             _extraDiscount  = order.trackModel.extraDiscount ?? 0.0;
           }
-          double _subTotal = _itemsPrice + _tax + _addOns;
-          double _total = _itemsPrice + _addOns - _discount - _extraDiscount + _tax + deliveryCharge - (order.trackModel != null
+          double _subTotal = _itemsPrice + _tax;
+          double _total = _itemsPrice - _discount - _extraDiscount + _tax + deliveryCharge - (order.trackModel != null
               ? order.trackModel.couponDiscountAmount : 0);
 
 
@@ -232,16 +232,16 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
       ]),
       SizedBox(height: 10),
 
-      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Text(getTranslated('tax', context), style: rubikRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
-        Text('(+) ${PriceConverter.convertPrice(context, _tax)}', style: rubikRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
-      ]),
-      SizedBox(height: 10),
+      // Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      //   Text(getTranslated('tax', context), style: rubikRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
+      //   Text('(+) ${PriceConverter.convertPrice(context, _tax)}', style: rubikRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
+      // ]),
+      // SizedBox(height: 10),
 
-      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Text(getTranslated('addons', context), style: rubikRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
-        Text('(+) ${PriceConverter.convertPrice(context, _addOns)}', style: rubikRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
-      ]),
+      // Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      //   Text(getTranslated('addons', context), style: rubikRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
+      //   Text('(+) ${PriceConverter.convertPrice(context, _addOns)}', style: rubikRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
+      // ]),
 
       Padding(
         padding: EdgeInsets.symmetric(vertical: Dimensions.PADDING_SIZE_SMALL),

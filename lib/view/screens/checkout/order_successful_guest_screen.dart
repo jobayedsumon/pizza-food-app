@@ -40,7 +40,7 @@ class _OrderSuccessfulGuestScreenState extends State<OrderSuccessfulGuestScreen>
         crossAxisAlignment: CrossAxisAlignment.center,
        children: [
          Text(
-           " Guest Mood Order Can't Track\n\nOnly Login Order Can Track\n\n Thank You\n",
+           " Guest Mode Order Can't Be Tracked\n\nOnly Login Order Can Be Tracked\n\n Thank You\n",
            textAlign: TextAlign.center,
            style: rubikMedium.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE,fontFamily: 'Rubik',),
          ),

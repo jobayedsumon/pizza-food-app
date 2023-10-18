@@ -69,8 +69,6 @@ class _NewRequestDialogState extends State<NotificationPopUpDialog> {
                 if(widget.payloadModel.image != 'null')
                   Builder(
                     builder: (context) {
-                      print('image :${widget.payloadModel.image}');
-                      print('type : ${widget.payloadModel.image.runtimeType }');
                       return ClipRRect(
                         borderRadius: BorderRadius.circular(20),
                         child: FadeInImage.assetNetwork(
@@ -118,7 +116,6 @@ class _NewRequestDialogState extends State<NotificationPopUpDialog> {
                   btnTxt: getTranslated('go', context),
                   onTap: () {
                     Navigator.pop(context);
-                    print('order id : ${widget.payloadModel.orderId} && ${widget.payloadModel.orderId.runtimeType}');
 
                     try{
                       if(widget.payloadModel.orderId == null

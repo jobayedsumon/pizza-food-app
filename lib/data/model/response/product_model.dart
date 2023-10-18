@@ -165,8 +165,8 @@ class Product {
       });
     }
 
-    _tax = json['tax'].toDouble();
-    _tax = json['tax'].toDouble();
+    _tax = json['tax']?.toDouble();
+    _tax = json['tax']?.toDouble();
     _availableTimeStarts = json['available_time_starts'] ?? '';
     _availableTimeEnds = json['available_time_ends'] ?? '' ;
     _status = json['status'] ?? 0;

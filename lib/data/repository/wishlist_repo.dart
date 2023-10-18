@@ -32,7 +32,6 @@ class WishListRepo {
   }
 
   Future<ApiResponse> removeWishList(int productID) async {
-    print('product id : $productID');
     try {
       final response = await dioClient.post(AppConstants.REMOVE_WISH_LIST_URI, data: {'product_id' : productID, '_method':'delete'});
       return ApiResponse.withSuccess(response);

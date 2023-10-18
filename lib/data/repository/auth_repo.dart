@@ -27,7 +27,6 @@ class AuthRepo {
       );
       return ApiResponse.withSuccess(response);
     } catch (e) {
-      print('9999999999999999999999999999999');
       return ApiResponse.withError(ApiErrorHandler.getMessage(e));
     }
   }
@@ -83,10 +82,8 @@ class AuthRepo {
       _deviceToken = await FirebaseMessaging.instance.getToken();
 
     }catch(error){
-      print('error is: $error');
     }
     if (_deviceToken != null) {
-      print('--------Device Token---------- '+_deviceToken);
     }
 
     return _deviceToken;
@@ -95,7 +92,6 @@ class AuthRepo {
   // for forgot password
   Future<ApiResponse> forgetPassword(String email) async {
     try {
-      //print({"email_or_phone": email});
       Response response = await dioClient.post(AppConstants.FORGET_PASSWORD_URI, data: {"email_or_phone": email, "email": email});
       return ApiResponse.withSuccess(response);
     } catch (e) {
@@ -105,7 +101,6 @@ class AuthRepo {
 
   Future<ApiResponse> verifyToken(String email, String token) async {
     try {
-      print({"email_or_phone": email, "reset_token": token});
       Response response = await dioClient.post(AppConstants.VERIFY_TOKEN_URI, data: {"email_or_phone": email, "email": email, "reset_token": token});
       return ApiResponse.withSuccess(response);
     } catch (e) {
@@ -115,7 +110,6 @@ class AuthRepo {
 
   Future<ApiResponse> resetPassword(String mail, String resetToken, String password, String confirmPassword) async {
     try {
-      print({"_method": "put", "reset_token": resetToken, "password": password, "confirm_password": confirmPassword, "email_or_phone": mail});
       Response response = await dioClient.post(
         AppConstants.RESET_PASSWORD_URI,
         data: {"_method": "put", "reset_token": resetToken, "password": password, "confirm_password": confirmPassword, "email_or_phone": mail, "email": mail},
@@ -241,9 +235,6 @@ class AuthRepo {
   }
 
   Future<ApiResponse> socialLogin(SocialLoginModel socialLogin) async {
-
-    print('------social login -- > ${socialLogin.toJson()}');
-    print('------social gmail -- > ${socialLogin.email}');
 
     try {
       Response response = await dioClient.post(

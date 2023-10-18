@@ -35,7 +35,7 @@ class ProductRepo {
             "sessiontoken":token
           },
         options: Options(headers: _headers),
-      ); print(languageCode );
+      );
       return ApiResponse.withSuccess(response);
     } catch (e) {
 
@@ -50,7 +50,7 @@ class ProductRepo {
         '${AppConstants.DELIVERY_INFO_URI}/$uid',
         //options: Options(headers: {'X-localization': languageCode}),
         options: Options(headers: {'Accept': 'application/json'}),
-      ); print(languageCode );
+      );
       return ApiResponse.withSuccess(response);
     } catch (e) {
       return ApiResponse.withError(ApiErrorHandler.getMessage(e));
@@ -63,7 +63,7 @@ class ProductRepo {
       final response = await dioClient.get(
         '${AppConstants.LATEST_PRODUCT_URI}?limit=12&&offset=$offset',
         options: Options(headers: {'X-localization': languageCode}),
-      ); print(languageCode );
+      );
       return ApiResponse.withSuccess(response);
     } catch (e) {
 

@@ -88,9 +88,9 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
         Provider.of<LocationProvider>(context, listen: false).updateAddressIndex(2, false);
       }
     }else {
-      _contactPersonNameController.text = '${_userModel.fName ?? ''}'
-          ' ${_userModel.lName ?? ''}';
-      _contactPersonNumberController.text = _userModel.phone ?? '';
+      _contactPersonNameController.text = '${_userModel?.fName ?? ''}'
+          ' ${_userModel?.lName ?? ''}';
+      _contactPersonNumberController.text = _userModel?.phone ?? '';
       _streetNumberController.text = '${widget.address?.streetNumber ?? ''}';
       _houseNumberController.text = '${widget.address?.houseNumber ?? ''}';
       _florNumberController.text = '${widget.address?.floorNumber ?? ''}';
@@ -118,7 +118,7 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
               Expanded(
                 child: Scrollbar(
                   child: SingleChildScrollView(
-
+                    primary: true,
                     child: Column(
                       children: [
                         ConstrainedBox(
@@ -232,7 +232,6 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
                     showCustomSnackBar("Contact Person Mobile Number is required", context);
                   }
                   else{
-                    debugPrint('location add address : ${locationProvider.pickPosition.latitude} || ${locationProvider.pickPosition.longitude}');
                     List<Branches> _branches = Provider.of<SplashProvider>(context, listen: false).configModel.branches;
                     bool _isAvailable = _branches.length == 1 && (_branches[0].latitude == null || _branches[0].latitude.isEmpty);
                     if(!_isAvailable) {
@@ -303,7 +302,6 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
                   }
                 }else{
 
-                  debugPrint('location add address : ${locationProvider.pickPosition.latitude} || ${locationProvider.pickPosition.longitude}');
                   List<Branches> _branches = Provider.of<SplashProvider>(context, listen: false).configModel.branches;
                   bool _isAvailable = _branches.length == 1 && (_branches[0].latitude == null || _branches[0].latitude.isEmpty);
                   if(!_isAvailable) {
@@ -313,8 +311,6 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
                         locationProvider.position.latitude ,
                         locationProvider.position.longitude,
                       ) / 1000;
-                      print('distance: ');
-                      print(_distance);
                       if (_distance < branch.coverage) {
                         _isAvailable = true;
                         break;

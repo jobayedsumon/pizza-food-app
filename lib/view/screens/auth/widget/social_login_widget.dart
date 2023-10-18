@@ -82,7 +82,6 @@ class _SocialLoginWidgetState extends State<SocialLoginWidget> {
                       try{
                         GoogleSignInAuthentication  _auth = await authProvider.googleLogin();
                         GoogleSignInAccount _googleAccount = authProvider.googleAccount;
-                        print('---------------google ----------- ${_googleAccount.email}');
 
                         Provider.of<AuthProvider>(context, listen: false).socialLogin(SocialLoginModel(
                           email: _googleAccount.email, token: _auth.idToken, uniqueId: _googleAccount.id, medium: 'google',
@@ -90,7 +89,6 @@ class _SocialLoginWidgetState extends State<SocialLoginWidget> {
 
 
                       }catch(er){
-                        print('access token error is : $er');
                       }
                     },
                     child: Container(
@@ -126,12 +124,10 @@ class _SocialLoginWidgetState extends State<SocialLoginWidget> {
               InkWell(
               onTap: () async{
                 LoginResult _result = await FacebookAuth.instance.login();
-                print('isuue ============== ${_result.message}');
 
                 if (_result.status == LoginStatus.success) {
                  Map _userData = await FacebookAuth.instance.getUserData();
 
-                 print('facebook --------------------------------------------------- $_userData');
 
                  Provider.of<AuthProvider>(context, listen: false).socialLogin(
                    SocialLoginModel(

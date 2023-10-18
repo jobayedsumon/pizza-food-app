@@ -45,28 +45,25 @@ class LocationSearchDialogWithoutMap extends StatelessWidget {
             return await Provider.of<LocationProvider>(context, listen: false).searchLocation(context, pattern);
           },
           itemBuilder: (context, Prediction suggestion) {
-            return Padding(
-              padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
-              child: Row(children: [
-                Icon(Icons.location_on),
-                Expanded(
-                  child: Text(suggestion.description, maxLines: 1, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.headline2.copyWith(
-                    color: Theme.of(context).textTheme.bodyText1.color, fontSize: Dimensions.FONT_SIZE_LARGE,
-                  )),
-                ),
-              ]),
+            return Listener(
+              onPointerDown: (_) => {
+                locationTextController.text = suggestion.description,
+                Provider.of<LocationProvider>(context, listen: false).setLocation(suggestion.placeId, suggestion.description, null)
+              },
+              child: Padding(
+                padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
+                child: Row(children: [
+                  Icon(Icons.location_on),
+                  Expanded(
+                    child: Text(suggestion.description, maxLines: 1, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.headline2.copyWith(
+                      color: Theme.of(context).textTheme.bodyText1.color, fontSize: Dimensions.FONT_SIZE_LARGE,
+                    )),
+                  ),
+                ]),
+              ),
             );
           },
-          onSuggestionSelected: (Prediction suggestion) {
-
-            locationTextController.text = suggestion.description;
-
-            Provider.of<LocationProvider>(context, listen: false).setLocation(suggestion.placeId, suggestion.description, null);
-
-
-
-            // Navigator.pop(context);
-          },
+          onSuggestionSelected: (Prediction suggestion) {},
         )),
       ),
     );

@@ -299,7 +299,6 @@ class _WebAppBarState extends State<WebAppBar> {
                               onChanged: (str){
                                 str.length = 0;
                                 search.getSearchText(str);
-                                // print('===>${search.searchController.text.toString()}');
 
                               },
                               

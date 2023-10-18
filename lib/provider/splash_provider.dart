@@ -40,7 +40,6 @@ class SplashProvider extends ChangeNotifier {
       }else {
         _error = apiResponse.error.errors[0].message;
       }
-      print(_error);
       showCustomSnackBar(_error, context);
     }
     return isSuccess;
@@ -107,7 +106,6 @@ class SplashProvider extends ChangeNotifier {
       }else {
         _error = apiResponse.error.errors[0].message;
       }
-      print(_error);
       ApiChecker.checkApi(context, apiResponse);
     }
     return isSuccess;

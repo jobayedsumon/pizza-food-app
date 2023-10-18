@@ -45,10 +45,8 @@ class ProfileProvider with ChangeNotifier {
       String message = map["message"];
       _userInfoModel = updateUserModel;
       _responseModel = ResponseModel(true, message);
-      print(message);
     } else {
       _responseModel = ResponseModel(false, '${response.statusCode} ${response.reasonPhrase}');
-      print('${response.statusCode} ${response.reasonPhrase}');
     }
     notifyListeners();
     return _responseModel;

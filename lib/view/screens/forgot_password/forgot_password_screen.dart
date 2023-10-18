@@ -160,7 +160,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                     !auth.isForgotPasswordLoading ? CustomButton(
                                       btnTxt: getTranslated('send', context),
                                       onTap: () {
-                                        print(Provider.of<SplashProvider>(context, listen: false).configModel.phoneVerification);
                                         if(Provider.of<SplashProvider>(context, listen: false).configModel.phoneVerification){
                                           if (_phoneNumberController.text.isEmpty) {
                                             showCustomSnackBar(getTranslated('enter_phone_number', context), context);

@@ -392,7 +392,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
                               double _discount = 0;
                               double _tax = 0;
                               double _addOns = 0;
+                              double totalQuantity = 0;
+
                               cart.cartList.forEach((cartModel) {
+                                totalQuantity += cartModel.quantity;
 
                                 List<AddOns> _addOnList = [];
                                 cartModel.addOnIds.forEach((addOnId) {
@@ -419,17 +422,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
 
                                 _availableList.add(DateConverter.isAvailable(cartModel.product.availableTimeStarts, cartModel.product.availableTimeEnds, context));
 
+                                double _addOns = 0;
                                 for(int index=0; index<_addOnList.length; index++) {
                                   _addOns = _addOns + (_addOnList[index].price * cartModel.addOnIds[index].quantity);
                                 }
-                                _itemPrice = _itemPrice + (cartModel.price * cartModel.quantity);
+                                _itemPrice = _itemPrice + (cartModel.quantity * (cartModel.quantity == 0.5 ? HALF_HALF_PRICE : cartModel.price)) + _addOns;
                                 _discount = _discount + (cartModel.discountAmount * cartModel.quantity);
                                 _tax = _tax + (cartModel.taxAmount * cartModel.quantity);
                               });
-                              double _subTotal = _itemPrice + _tax + _addOns;
+                              double _subTotal = _itemPrice + _tax;
                               double _total = _subTotal - _discount - Provider.of<CouponProvider>(context).discount + deliveryCharge;
                               double _totalWithoutDeliveryFee = _subTotal - _discount - Provider.of<CouponProvider>(context).discount;
-                              double _orderAmount = _itemPrice + _addOns;
+                              double _orderAmount = _itemPrice;
                               bool _kmWiseCharge = Provider.of<SplashProvider>(context, listen: false).configModel.deliveryManagement.status == 1;
 
                               return cart.cartList.length > 0 ? Column(
@@ -591,17 +595,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
                                                                   ]),
                                                                   SizedBox(height: 10),
 
-                                                                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                                                                    Text(getTranslated('tax', context), style: rubikRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
-                                                                    Text('(+) ${PriceConverter.convertPrice(context, _tax)}', style: rubikRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
-                                                                  ]),
-                                                                  SizedBox(height: 10),
+                                                                  // Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                                                  //   Text(getTranslated('tax', context), style: rubikRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
+                                                                  //   Text('(+) ${PriceConverter.convertPrice(context, _tax)}', style: rubikRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
+                                                                  // ]),
+                                                                  // SizedBox(height: 10),
 
-                                                                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                                                                    Text(getTranslated('addons', context), style: rubikRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
-                                                                    Text('(+) ${PriceConverter.convertPrice(context, _addOns)}', style: rubikRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
-                                                                  ]),
-                                                                  SizedBox(height: 10),
+                                                                  // Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                                                  //   Text(getTranslated('addons', context), style: rubikRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
+                                                                  //   Text('(+) ${PriceConverter.convertPrice(context, _addOns)}', style: rubikRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
+                                                                  // ]),
+                                                                  // SizedBox(height: 10),
 
                                                                   Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                                                                     Text(getTranslated('discount', context), style: rubikRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
@@ -649,7 +653,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
                                                                     padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
                                                                     child: CustomButton(btnTxt: getTranslated('continue_checkout', context), onTap: () {
 
-                                                                      if(_orderAmount < Provider.of<SplashProvider>(context, listen: false).configModel.minimumOrderValue) {
+                                                                      if(totalQuantity % 1 != 0.00) {
+                                                                        showCustomSnackBar('Please complete the Half/Half order.', context);
+                                                                      }
+                                                                      else if(_orderAmount < Provider.of<SplashProvider>(context, listen: false).configModel.minimumOrderValue) {
                                                                         showCustomSnackBar('Minimum order amount is ${PriceConverter.convertPrice(context, Provider.of<SplashProvider>(context, listen: false).configModel
                                                                             .minimumOrderValue)}, you have ${PriceConverter.convertPrice(context, _orderAmount)} in your cart, please add more item.', context);
                                                                       } else {
@@ -682,7 +689,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
                                     width: 1170,
                                     padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
                                     child: CustomButton(btnTxt: getTranslated('continue_checkout', context), onTap: () {
-                                      if(_orderAmount < Provider.of<SplashProvider>(context, listen: false).configModel.minimumOrderValue) {
+                                      if(totalQuantity % 1 != 0.00) {
+                                        showCustomSnackBar('Please complete the Half/Half order.', context);
+                                      }
+                                      else if(_orderAmount < Provider.of<SplashProvider>(context, listen: false).configModel.minimumOrderValue) {
                                         showCustomSnackBar('Minimum order amount is ${PriceConverter.convertPrice(context, Provider.of<SplashProvider>(context, listen: false).configModel
                                             .minimumOrderValue)}, you have ${PriceConverter.convertPrice(context, _orderAmount)} in your cart, please add more item.', context);
                                       } else {
@@ -724,7 +734,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
                   double _discount = 0;
                   double _tax = 0;
                   double _addOns = 0;
+                  double totalQuantity = 0;
+
                   cart.cartList.forEach((cartModel) {
+
+                    totalQuantity += cartModel.quantity;
 
                     List<AddOns> _addOnList = [];
                     cartModel.addOnIds.forEach((addOnId) {
@@ -963,7 +977,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
                                                         width: 1170,
                                                         padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
                                                         child: CustomButton(btnTxt: getTranslated('continue_checkout', context), onTap: () {
-                                                          if(_orderAmount < Provider.of<SplashProvider>(context, listen: false).configModel.minimumOrderValue) {
+                                                          if(totalQuantity % 1 != 0.00) {
+                                                            showCustomSnackBar('Please complete the Half/Half order.', context);
+                                                          } else if(_orderAmount < Provider.of<SplashProvider>(context, listen: false).configModel.minimumOrderValue) {
                                                             showCustomSnackBar('Minimum order amount is ${PriceConverter.convertPrice(context, Provider.of<SplashProvider>(context, listen: false).configModel
                                                                 .minimumOrderValue)}, you have ${PriceConverter.convertPrice(context, _orderAmount)} in your cart, please add more item.', context);
                                                           } else {
@@ -995,7 +1011,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
                         width: 1170,
                         padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
                         child: CustomButton(btnTxt: getTranslated('continue_checkout', context), onTap: () {
-                          if(_orderAmount < Provider.of<SplashProvider>(context, listen: false).configModel.minimumOrderValue) {
+                          if(totalQuantity % 1 != 0.00) {
+                            showCustomSnackBar('Please complete the Half/Half order.', context);
+                          }
+                          else if(_orderAmount < Provider.of<SplashProvider>(context, listen: false).configModel.minimumOrderValue) {
                             showCustomSnackBar('Minimum order amount is ${PriceConverter.convertPrice(context, Provider.of<SplashProvider>(context, listen: false).configModel
                                 .minimumOrderValue)}, you have ${PriceConverter.convertPrice(context, _orderAmount)} in your cart, please add more item.', context);
                           } else {

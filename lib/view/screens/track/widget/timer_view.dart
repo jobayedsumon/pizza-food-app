@@ -23,7 +23,6 @@ class _TimerViewState extends State<TimerView> {
             minutes = orderTimer.duration.inMinutes - (24 * days * 60) - (hours * 60);
             seconds = orderTimer.duration.inSeconds - (24 * days * 60 * 60) - (hours * 60 * 60) - (minutes * 60);
           }
-          print('end time : ${orderTimer.duration}');
           return Column( children: [
             Image.asset(Images.delivery_man_gif, height: 200),
             SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),

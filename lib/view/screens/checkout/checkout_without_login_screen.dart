@@ -70,7 +70,6 @@ class _CheckoutWithoutLoginScreenState extends State<CheckoutWithoutLoginScreen>
 
   @override
   void initState() {
-    print('total amount is : ${widget.amount}');
     super.initState();
     _isLoggedIn = Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
     if(_isLoggedIn) {
@@ -213,7 +212,6 @@ class _CheckoutWithoutLoginScreenState extends State<CheckoutWithoutLoginScreen>
                                                       await Geolocator.requestPermission();
                                                       _mapController = controller;
                                                       _loading = false;
-                                                      print('isLoading cancel =========== ${_loading}');
                                                       _setMarkers(0);
                                                     },
                                                   ),
@@ -488,8 +486,10 @@ class _CheckoutWithoutLoginScreenState extends State<CheckoutWithoutLoginScreen>
                 showCustomSnackBar(getTranslated('delivery_fee_not_set_yet', context), context);
               }else {
                 List<Cart> carts = [];
+                double totalQuantity = 0;
                 for (int index = 0; index < _cartList.length; index++) {
                   CartModel cart = _cartList[index];
+                  totalQuantity += cart.quantity;
                   List<int> _addOnIdList = [];
                   List<int> _addOnQtyList = [];
                   cart.addOnIds.forEach((addOn) {
@@ -506,20 +506,33 @@ class _CheckoutWithoutLoginScreenState extends State<CheckoutWithoutLoginScreen>
                     cart.discountAmount, cart.quantity, cart.taxAmount, _addOnIdList,_allergiesIdList, _addOnQtyList,
                   ));
                 }
+
+                if(order.orderType=="delivery" && order.addressIndex == -1){
+                  showCustomSnackBar('Please select an address', context);
+                  return;
+                }
+
+                if(totalQuantity % 1 != 0.00) {
+                  showCustomSnackBar('Please complete the Half/Half order.', context);
+                  return;
+                }
+
                 PlaceOrderBody _placeOrderBody = PlaceOrderBody(
                   cart: carts, couponDiscountAmount: Provider.of<CouponProvider>(context, listen: false).discount,
                   couponDiscountTitle: widget.couponCode.isNotEmpty ? widget.couponCode : null,
                   deliveryAddressId: !_takeAway ? Provider.of<LocationProvider>(context, listen: false)
                       .addressList[order.addressIndex].id : 0,
                   orderAmount: double.parse('${(widget.amount).toStringAsFixed(2)}'),
-                  orderNote: _noteController.text ?? '', orderType: widget.orderType,
+                  orderNote: _noteController.text ?? '',
+                  orderType: order.orderType,
                   paymentMethod: _isCashOnDeliveryActive ? order.paymentMethodIndex == 0 ? 'cash_on_delivery' : null : null,
                   couponCode: widget.couponCode.isNotEmpty ? widget.couponCode : null, distance: _takeAway ? 0 : order.distance,
                   branchId: _branches[order.branchIndex].id,
                   deliveryDate: DateFormat('yyyy-MM-dd').format(_scheduleStartDate),
                   deliveryTime: (order.selectTimeSlot == 0 && order.selectDateSlot == 0) ? 'now' : DateFormat('HH:mm').format(_scheduleStartDate),
+                  delivery_address: order.orderType=="delivery"?convert.jsonEncode(Provider.of<LocationProvider>(context, listen: false).addressList[order.addressIndex].toJson()):"",
+                  order_state: 'current',
                 );
-                print('payment amount : ${_placeOrderBody.orderAmount}');
 
                 if(_isCashOnDeliveryActive && Provider.of<OrderProvider>(context, listen: false).paymentMethodIndex == 0) {
                   order.placeOrder(_placeOrderBody, _callback);

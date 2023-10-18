@@ -64,7 +64,7 @@
   "demo_gmail": "demo@gmail.com",
   "password_did_not_match": "لم لا تتطابق مع كلمة المرور",
   "mobile_number": "رقم الهاتف المحمول",
-  "number_hint": "+880 1234567890",
+  "number_hint": "Total 10 digits with 0 first",
   "password": "كلمه السر",
   "password_hint": "••••••••••",
   "remember_me": "تذكرنى",

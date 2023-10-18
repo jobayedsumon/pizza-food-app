@@ -93,10 +93,7 @@ class Routes {
     return '$CATEGORY_SCREEN?category=$_data';
   }
   static String getDashboardRoute(String page) => '$DASHBOARD_SCREEN?page=$page';
-  /*static String getDashboardRoute(String deliveryInfo) {
-   print(deliveryInfo);
-    return '$DASHBOARD?dashboard=$deliveryInfo';
-  }*/
+
   static String getCheckoutRoute(double amount, String page, String type, String code) {
     String _amount= base64Url.encode(utf8.encode(amount.toString()));
     return '$CHECKOUT_SCREEN?amount=$_amount&page=$page&type=$type&code=$code';
@@ -105,13 +102,11 @@ class Routes {
   static String getPaymentRoute({@required String page, String id, int user, String selectAddress, PlaceOrderBody placeOrderBody}) {
     String _address = selectAddress != null ? base64Encode(utf8.encode(selectAddress)) : 'null';
     String _data = placeOrderBody != null ? base64Url.encode(utf8.encode(jsonEncode(placeOrderBody.toJson()))) : 'null';
-    print("\n----------# :"+'$PAYMENT_SCREEN?page=$page&id=$id&user=$user&address=$_address&place_order=$_data');
     return '$PAYMENT_SCREEN?page=$page&id=$id&user=$user&address=$_address&place_order=$_data';
   }
   static String getGuestPaymentRoute({@required String page, String id, int user, String selectAddress, PlaceOrderGuestBody placeOrderBody}) {
     String _address = selectAddress != null ? base64Encode(utf8.encode(selectAddress)) : 'null';
     String _data = placeOrderBody != null ? base64Url.encode(utf8.encode(jsonEncode(placeOrderBody.toGuestJson()))) : 'null';
-    print("\n----------* :"+'$PAYMENT_SCREEN?page=$page&id=$id&user=$user&address=$_address&place_order=$_data');
     return '$PAYMENT_SCREEN?page=$page&id=$id&user=$user&address=$_address&place_order=$_data';
   }
 

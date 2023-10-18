@@ -37,7 +37,6 @@ class ApiErrorHandler {
                     errorResponse = ErrorResponse.fromJson(error.response.data);
                   }catch(e) {}
                   if (errorResponse != null && errorResponse.errors != null && errorResponse.errors.length > 0) {
-                    print('error----------------== ${errorResponse.toJson()}');
                     errorDescription = errorResponse;
                   } else
                     errorDescription =

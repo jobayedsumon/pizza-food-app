@@ -64,6 +64,7 @@ class OrderProvider extends ChangeNotifier {
 
   set orderType(String value) {
     _orderType = value;
+    notifyListeners();
   }
 
   set selectTimeSlot(int value) {
@@ -143,6 +144,7 @@ class OrderProvider extends ChangeNotifier {
   }
 
   Future<ResponseModel> trackOrder(String orderID, OrderModel orderModel, BuildContext context, bool fromTracking) async {
+
     _trackModel = null;
     _responseModel = null;
     if(!fromTracking) {
@@ -155,7 +157,6 @@ class OrderProvider extends ChangeNotifier {
       if (apiResponse.response != null && apiResponse.response.statusCode == 200) {
         _trackModel = OrderModel.fromJson(apiResponse.response.data);
         _responseModel = ResponseModel(true, apiResponse.response.data.toString());
-        debugPrint('responseModel : ${_responseModel.message}');
       } else {
         _responseModel = ResponseModel(false, apiResponse.error.errors[0].message);
         ApiChecker.checkApi(context, apiResponse);
@@ -252,7 +253,6 @@ class OrderProvider extends ChangeNotifier {
       _showCancelled = true;
       callback(apiResponse.response.data['message'], true, orderID);
     } else {
-      print(apiResponse.error.errors[0].message);
       callback(apiResponse.error.errors[0].message, false, '-1');
     }
     notifyListeners();

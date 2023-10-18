@@ -61,7 +61,6 @@ class AuthProvider with ChangeNotifier {
         ErrorResponse errorResponse = apiResponse.error;
         errorMessage = errorResponse.errors[0].message;
       }
-      print(errorMessage);
       _registrationErrorMessage = errorMessage;
       responseModel = ResponseModel(false, errorMessage);
     }
@@ -94,7 +93,6 @@ class AuthProvider with ChangeNotifier {
       } else {
         errorMessage = apiResponse.error.errors[0].message;
       }
-      print(errorMessage);
       _loginErrorMessage = errorMessage;
       responseModel = ResponseModel(false, errorMessage);
     }
@@ -120,11 +118,9 @@ class AuthProvider with ChangeNotifier {
     } else {
       String errorMessage;
       if (apiResponse.error is String) {
-        print('forgetError S: ${apiResponse.error.toString()}');
         errorMessage = apiResponse.error.toString();
       } else {
         ErrorResponse errorResponse = apiResponse.error;
-        print('forgetError: ${errorResponse.errors[0].message}');
         errorMessage = errorResponse.errors[1].message;
       }
       responseModel = ResponseModel(false, errorMessage);
@@ -143,12 +139,10 @@ class AuthProvider with ChangeNotifier {
       } else {
         errorMessage = apiResponse.error.errors[0].message;
       }
-      print(errorMessage);
     }
   }
 
   Future<ResponseModel> verifyToken(String email) async {
-    print('varify number : $email');
     _isPhoneNumberVerificationButtonLoading = true;
     notifyListeners();
     ApiResponse apiResponse = await authRepo.verifyToken(email, _verificationCode);
@@ -160,11 +154,9 @@ class AuthProvider with ChangeNotifier {
     } else {
       String errorMessage;
       if (apiResponse.error is String) {
-        print(apiResponse.error.toString());
         errorMessage = apiResponse.error.toString();
       } else {
         ErrorResponse errorResponse = apiResponse.error;
-        print(errorResponse.errors[0].message);
         errorMessage = errorResponse.errors[0].message;
       }
       responseModel = ResponseModel(false, errorMessage);
@@ -184,11 +176,9 @@ class AuthProvider with ChangeNotifier {
     } else {
       String errorMessage;
       if (apiResponse.error is String) {
-        print(apiResponse.error.toString());
         errorMessage = apiResponse.error.toString();
       } else {
         ErrorResponse errorResponse = apiResponse.error;
-        print(errorResponse.errors[0].message);
         errorMessage = errorResponse.errors[0].message;
       }
       responseModel = ResponseModel(false, errorMessage);
@@ -235,11 +225,9 @@ class AuthProvider with ChangeNotifier {
     } else {
       String errorMessage;
       if (apiResponse.error is String) {
-        print(apiResponse.error.toString());
         errorMessage = apiResponse.error.toString();
       } else {
         ErrorResponse errorResponse = apiResponse.error;
-        print(errorResponse.errors[0].message);
         errorMessage = errorResponse.errors[0].message;
       }
       responseModel = ResponseModel(false, errorMessage);
@@ -262,11 +250,9 @@ class AuthProvider with ChangeNotifier {
     } else {
       String errorMessage;
       if (apiResponse.error is String) {
-        print(apiResponse.error.toString());
         errorMessage = apiResponse.error.toString();
       } else {
         ErrorResponse errorResponse = apiResponse.error;
-        print(errorResponse.errors[0].message);
         errorMessage = errorResponse.errors[0].message;
       }
       responseModel = ResponseModel(false, errorMessage);
@@ -289,11 +275,9 @@ class AuthProvider with ChangeNotifier {
     } else {
       String errorMessage;
       if (apiResponse.error is String) {
-        print(apiResponse.error.toString());
         errorMessage = apiResponse.error.toString();
       } else {
         ErrorResponse errorResponse = apiResponse.error;
-        print(errorResponse.errors[0].message);
         errorMessage = errorResponse.errors[0].message;
       }
       responseModel = ResponseModel(false, errorMessage);
@@ -312,7 +296,6 @@ class AuthProvider with ChangeNotifier {
     _verificationMsg = '';
     notifyListeners();
     ApiResponse apiResponse = await authRepo.verifyPhone(_phoneNumber, _verificationCode);
-    print('phone verify : $_phoneNumber || $_verificationCode');
     _isPhoneNumberVerificationButtonLoading = false;
     notifyListeners();
     ResponseModel responseModel;
@@ -321,11 +304,9 @@ class AuthProvider with ChangeNotifier {
     } else {
       String errorMessage;
       if (apiResponse.error is String) {
-        print(apiResponse.error.toString());
         errorMessage = apiResponse.error.toString();
       } else {
         ErrorResponse errorResponse = apiResponse.error;
-        print(errorResponse.errors[0].message);
         errorMessage = errorResponse.errors[0].message;
       }
       responseModel = ResponseModel(false, errorMessage);
@@ -403,7 +384,6 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
     ApiResponse response = await authRepo.deleteUser();
     _isLoading = false;
-    print('status code is : ${response.response.statusCode}');
     if (response.response.statusCode == 200) {
       Provider.of<SplashProvider>(context, listen: false).removeSharedData();
       showCustomSnackBar(getTranslated('your_account_remove_successfully', context),context );
@@ -427,12 +407,6 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future socialLogin(SocialLoginModel socialLogin, Function callback) async {
-    print('============== token ==========');
-    print(socialLogin.token);
-    print(socialLogin.email);
-    print(socialLogin.uniqueId);
-    print(socialLogin.medium);
-    print('============== token ==========');
 
     _isLoading = true;
     notifyListeners();
@@ -469,7 +443,6 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
 
     }else {
-      print('error======================== ${apiResponse.error}');
       String errorMessage = ErrorResponse.fromJson(apiResponse.error).errors[0].message;
       callback(false, '', '',errorMessage);
       notifyListeners();

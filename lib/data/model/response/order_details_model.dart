@@ -10,7 +10,7 @@ class OrderDetailsModel {
   Variation _variation;
   double _discountOnProduct;
   String _discountType;
-  int _quantity;
+  double _quantity;
   double _taxAmount;
   String _createdAt;
   String _updatedAt;
@@ -29,7 +29,7 @@ class OrderDetailsModel {
         Variation variation,
         double discountOnProduct,
         String discountType,
-        int quantity,
+        double quantity,
         double taxAmount,
         String createdAt,
         String updatedAt,
@@ -65,7 +65,7 @@ class OrderDetailsModel {
   Variation get variation => _variation;
   double get discountOnProduct => _discountOnProduct;
   String get discountType => _discountType;
-  int get quantity => _quantity;
+  double get quantity => _quantity;
   double get taxAmount => _taxAmount;
   String get createdAt => _createdAt;
   String get updatedAt => _updatedAt;
@@ -96,12 +96,12 @@ class OrderDetailsModel {
 
     _discountOnProduct = json['discount_on_product'].toDouble();
     _discountType = json['discount_type'];
-    _quantity = json['quantity'];
+    _quantity = double.parse(json['quantity']);
     _taxAmount = json['tax_amount'].toDouble();
     _createdAt = json['created_at'];
     _updatedAt = json['updated_at'];
     _addOnIds = json['add_on_ids'].cast<int>();
-    _allergIds = json['allerg_ids'].cast<int>();
+    _allergIds = json['allerg_ids'] != null ? json['allerg_ids'].cast<int>(): [];
     if(json['add_on_qtys'] != null) {
       _addOnQtys = [];
       json['add_on_qtys'].forEach((qun) {

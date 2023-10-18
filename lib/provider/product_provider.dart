@@ -42,7 +42,7 @@ class ProductProvider extends ChangeNotifier {
   int _latestPageSize;
   List<String> _offsetList = [];
   List<int> _variationIndex = [0];
-  int _quantity = 1;
+  double _quantity = 1;
   List<bool> _addOnActiveList = [];
   List<bool> _allergiesActiveList = [];
   List<int> _addOnQtyList = [];
@@ -66,7 +66,7 @@ class ProductProvider extends ChangeNotifier {
   int get popularPageSize => _popularPageSize;
   int get latestPageSize => _latestPageSize;
   List<int> get variationIndex => _variationIndex;
-  int get quantity => _quantity;
+  double get quantity => _quantity;
   List<bool> get addOnActiveList => _addOnActiveList;
   List<bool> get allergiesActiveList => _allergiesActiveList;
   List<int> get addOnQtyList => _addOnQtyList;
@@ -145,7 +145,6 @@ class ProductProvider extends ChangeNotifier {
             if(addressType=="0"){
               //Provider.of<OrderProvider>(context, listen: false).orderType = "take_away";
               Provider.of<OrderProvider>(context, listen: false).setOrderType('take_away',notify: true);
-             // print(Provider.of<OrderProvider>(context, listen: false).orderType)
               notifyListeners();
             }else{
              // Provider.of<OrderProvider>(context, listen: false).orderType = "delivery";
@@ -348,11 +347,16 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setQuantity(bool isIncrement) {
-    if (isIncrement) {
-      _quantity = _quantity + 1;
+  void setQuantity(dynamic isIncrement) {
+
+    if (isIncrement is bool) {
+      if (isIncrement) {
+        _quantity = _quantity == 0.5 ? 1 : _quantity + 1;
+      } else {
+        _quantity = _quantity - 1;
+      }
     } else {
-      _quantity = _quantity - 1;
+      _quantity = isIncrement;
     }
     notifyListeners();
   }

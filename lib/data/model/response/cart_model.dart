@@ -5,7 +5,7 @@ class CartModel {
   double _discountedPrice;
   List<Variation> _variation;
   double _discountAmount;
-  int _quantity;
+  double _quantity;
   double _taxAmount;
   List<AddOn> _addOnIds;
   List<Allerg> _allergIds;
@@ -16,7 +16,7 @@ class CartModel {
         double discountedPrice,
         List<Variation> variation,
         double discountAmount,
-        int quantity,
+        double quantity,
         double taxAmount,
         List<AddOn> addOnIds,
         List<Allerg> allergIds,
@@ -37,9 +37,9 @@ class CartModel {
   List<Variation> get variation => _variation;
   double get discountAmount => _discountAmount;
   // ignore: unnecessary_getters_setters
-  int get quantity => _quantity;
+  double get quantity => _quantity;
   // ignore: unnecessary_getters_setters
-  set quantity(int qty) => _quantity = qty;
+  set quantity(double qty) => _quantity = qty;
   double get taxAmount => _taxAmount;
   List<AddOn> get addOnIds => _addOnIds;
   List<Allerg> get allergIds => _allergIds;

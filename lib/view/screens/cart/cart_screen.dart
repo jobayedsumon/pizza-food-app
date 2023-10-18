@@ -65,7 +65,11 @@ class _CartScreenState extends State<CartScreen> {
               double _discount = 0;
               double _tax = 0;
               double _addOns = 0;
+              double totalQuantity = 0;
+
               cart.cartList.forEach((cartModel) {
+
+                totalQuantity += cartModel.quantity;
 
                 List<AddOns> _addOnList = [];
                 cartModel.addOnIds.forEach((addOnId) {
@@ -310,7 +314,10 @@ class _CartScreenState extends State<CartScreen> {
                                                 width: 1170,
                                                 padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
                                                 child: CustomButton(btnTxt: getTranslated('continue_checkout', context), onTap: () {
-                                                  if(_orderAmount < Provider.of<SplashProvider>(context, listen: false).configModel.minimumOrderValue) {
+                                                  if(totalQuantity % 1 != 0.00) {
+                                                    showCustomSnackBar('Please complete the Half/Half order.', context);
+                                                  }
+                                                  else if(_orderAmount < Provider.of<SplashProvider>(context, listen: false).configModel.minimumOrderValue) {
                                                     showCustomSnackBar('Minimum order amount is ${PriceConverter.convertPrice(context, Provider.of<SplashProvider>(context, listen: false).configModel
                                                         .minimumOrderValue)}, you have ${PriceConverter.convertPrice(context, _orderAmount)} in your cart, please add more item.', context);
                                                   } else {
@@ -342,7 +349,10 @@ class _CartScreenState extends State<CartScreen> {
                     width: 1170,
                     padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
                     child: CustomButton(btnTxt: getTranslated('continue_checkout', context), onTap: () {
-                      if(_orderAmount < Provider.of<SplashProvider>(context, listen: false).configModel.minimumOrderValue) {
+                      if(totalQuantity % 1 != 0.00) {
+                        showCustomSnackBar('Please complete the Half/Half order.', context);
+                      }
+                      else if(_orderAmount < Provider.of<SplashProvider>(context, listen: false).configModel.minimumOrderValue) {
                         showCustomSnackBar('Minimum order amount is ${PriceConverter.convertPrice(context, Provider.of<SplashProvider>(context, listen: false).configModel
                             .minimumOrderValue)}, you have ${PriceConverter.convertPrice(context, _orderAmount)} in your cart, please add more item.', context);
                       } else {

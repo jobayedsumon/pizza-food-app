@@ -21,11 +21,9 @@ class TimerProvider with ChangeNotifier {
     }
 
     DateTime endTime = _orderTime.add(Duration(minutes: int.parse(order.preparationTime)));
-    print('object === $endTime');
 
     // _duration = DateTime.now().difference(endTime);
     _duration = endTime.difference(DateTime.now());
-    print('duration === ${_duration.inMinutes}');
     _timer?.cancel();
     _timer = null;
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {

@@ -312,7 +312,7 @@ class Cart {
   String _variant;
   List<Variation> _variation;
   double _discountAmount;
-  int _quantity;
+  double _quantity;
   double _taxAmount;
   List<int> _addOnIds;
   List<int> _allergiesIds;
@@ -324,7 +324,7 @@ class Cart {
         String variant,
         List<Variation> variation,
         double discountAmount,
-        int quantity,
+        double quantity,
         double taxAmount,
         List<int> addOnIds,
         List<int> allergiesIds,
@@ -346,7 +346,7 @@ class Cart {
   String get variant => _variant;
   List<Variation> get variation => _variation;
   double get discountAmount => _discountAmount;
-  int get quantity => _quantity;
+  double get quantity => _quantity;
   double get taxAmount => _taxAmount;
   List<int> get addOnIds => _addOnIds;
   List<int> get allergiesIds => _allergiesIds;

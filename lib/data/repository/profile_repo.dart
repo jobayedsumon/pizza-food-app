@@ -47,13 +47,11 @@ class ProfileRepo{
     http.MultipartRequest request = http.MultipartRequest('POST', Uri.parse('${AppConstants.BASE_URL}${AppConstants.UPDATE_PROFILE_URI}'));
     request.headers.addAll(<String,String>{'Authorization': 'Bearer $token'});
     if(file != null) {
-      print('----------------${file.readAsBytes().asStream()}/${file.lengthSync()}/${file.path.split('/').last}');
       request.files.add(http.MultipartFile('image', file.readAsBytes().asStream(), file.lengthSync(), filename: file.path.split('/').last));
     }else if(data != null) {
       Uint8List _list = await data.readAsBytes();
       var part = http.MultipartFile('image', data.readAsBytes().asStream(), _list.length, filename: basename(data.path), contentType: MediaType('image', 'jpg'));
       request.files.add(part);
-      print('----------------${_list.length}/${basename(data.path)}');
     }
     Map<String, String> _fields = Map();
     if(password.isEmpty) {

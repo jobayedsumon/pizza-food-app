@@ -41,7 +41,7 @@ dependencies:
   flutter_widget_from_html_core: ^0.8.5+1
   phone_number: ^1.0.0
   country_code_picker: ^3.0.0
-  flutter_typeahead: ^4.3.1
+  flutter_typeahead: ^4.8.0
   cloud_firestore: ^4.0.5
   fwfh_selectable_text: ^0.8.3+1
   circular_countdown_timer: ^0.2.1

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_restaurant/data/model/response/product_model.dart';
 
 class OrderModel {
@@ -165,10 +167,9 @@ class OrderModel {
       }
     }
     _deliveryAddress = json['delivery_address'] != null
-        ? new DeliveryAddress.fromJson(json['delivery_address'])
+        ? new DeliveryAddress.fromJson(json['delivery_address'] is String ? jsonDecode(json['delivery_address']) : json['delivery_address'])
         : null;
     _preparationTime = json['preparation_time'].toString() ?? '0';
-   // print('order pre time -- $_preparationTime');
     _isProductAvailable = int.tryParse('${json['is_product_available']}') == 1 ? true : false;
 
   }
@@ -291,7 +292,7 @@ class Details {
   double _price;
   double _discountOnProduct;
   String _discountType;
-  int _quantity;
+  double _quantity;
   double _taxAmount;
   String _createdAt;
   String _updatedAt;
@@ -304,7 +305,7 @@ class Details {
         String productDetails,
         double discountOnProduct,
         String discountType,
-        int quantity,
+        double quantity,
         double taxAmount,
         String createdAt,
         String updatedAt,
@@ -328,7 +329,7 @@ class Details {
   double get price => _price;
   double get discountOnProduct => _discountOnProduct;
   String get discountType => _discountType;
-  int get quantity => _quantity;
+  double get quantity => _quantity;
   double get taxAmount => _taxAmount;
   String get createdAt => _createdAt;
   String get updatedAt => _updatedAt;
@@ -340,7 +341,7 @@ class Details {
     _price = json['price'].toDouble();
     _discountOnProduct = json['discount_on_product'].toDouble();
     _discountType = json['discount_type'];
-    _quantity = json['quantity'];
+    _quantity = double.parse(json['quantity']);
     _taxAmount = json['tax_amount'].toDouble();
     _createdAt = json['created_at'];
     _updatedAt = json['updated_at'];

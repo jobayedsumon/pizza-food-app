@@ -105,9 +105,9 @@ class ButtonView extends StatelessWidget {
             ),
           ),
 
-          (order.trackModel.orderStatus == 'confirmed'
+          ((order.trackModel.orderStatus == 'confirmed'
               || order.trackModel.orderStatus == 'processing'
-              || order.trackModel.orderStatus == 'out_for_delivery')
+              || order.trackModel.orderStatus == 'out_for_delivery') && order.trackModel.orderType == 'delivery')
               ?
           Center(
             child: Container(

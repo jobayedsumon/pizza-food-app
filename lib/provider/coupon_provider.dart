@@ -55,7 +55,6 @@ class CouponProvider extends ChangeNotifier {
         _discount = 0.0;
       }
     } else {
-      print(apiResponse.error.toString());
       _discount = 0.0;
     }
     _isLoading = false;

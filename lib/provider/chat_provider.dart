@@ -81,7 +81,6 @@ class ChatProvider extends ChangeNotifier {
 
 
   Future<http.StreamedResponse> sendMessage(String message, BuildContext context, String token, OrderModel order) async {
-    print('is order null ${order == null}');
     http.StreamedResponse _response;
     _isLoading = true;
     // notifyListeners();

@@ -8,8 +8,7 @@ firebase.initializeApp({
       storageBucket: "pizza-corner-e2f6f.appspot.com",
       messagingSenderId: "1066475948869",
       appId: "1:1066475948869:web:b4bd5ea6ad0cf59ea10c2c",
-      measurementId: "G-DZ5T8BLR87"
-      databaseURL: "...",
+      measurementId: "G-DZ5T8BLR87",
 });
 
 const messaging = firebase.messaging();
