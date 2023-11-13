@@ -20,10 +20,12 @@ class TimerProvider with ChangeNotifier {
       _orderTime =  DateFormat("yyyy-MM-dd HH:mm").parse('${order.deliveryDate} ${order.deliveryTime}');
     }
 
-    DateTime endTime = _orderTime.add(Duration(minutes: int.parse(order.preparationTime)));
+    DateTime endTime = _orderTime.toUtc().add(Duration(hours: 11, minutes: int.parse(order.preparationTime)));
+
+    DateTime now = DateTime.now().toUtc().add(Duration(hours: 11));
 
     // _duration = DateTime.now().difference(endTime);
-    _duration = endTime.difference(DateTime.now());
+    _duration = endTime.difference(now);
     _timer?.cancel();
     _timer = null;
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
@@ -35,7 +37,7 @@ class TimerProvider with ChangeNotifier {
     });
     if(_duration.isNegative) {
       _duration = Duration();
-    }_duration = endTime.difference(DateTime.now());
+    }_duration = endTime.difference(now);
 
   }
 

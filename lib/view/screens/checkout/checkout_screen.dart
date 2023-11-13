@@ -4,12 +4,9 @@ import 'dart:convert'as convert;
 import 'package:flutter_restaurant/data/model/response/base/delivery_address_model.dart';
 import 'package:flutter_restaurant/data/model/response/product_model.dart';
 import 'package:flutter_restaurant/provider/localization_provider.dart';
-import 'package:flutter_restaurant/view/base/no_data_screen.dart';
 import 'package:flutter_restaurant/view/screens/cart/cart_screen.dart';
 import 'package:flutter_restaurant/view/screens/cart/widget/delivery_option_button.dart';
 import 'package:flutter_restaurant/view/screens/dashboard/dashboard_screen.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:email_validator/email_validator.dart';
 
 import 'dart:typed_data';
 import 'dart:ui';
@@ -20,7 +17,6 @@ import 'package:flutter_restaurant/data/model/body/place_order_body.dart';
 import 'package:flutter_restaurant/data/model/response/address_model.dart';
 import 'package:flutter_restaurant/data/model/response/cart_model.dart';
 import 'package:flutter_restaurant/data/model/response/config_model.dart';
-import 'package:flutter_restaurant/data/model/response/order_model.dart';
 import 'package:flutter_restaurant/data/model/response/signup_model.dart';
 import 'package:flutter_restaurant/helper/date_converter.dart';
 import 'package:flutter_restaurant/helper/price_converter.dart';
@@ -40,20 +36,15 @@ import 'package:flutter_restaurant/utill/dimensions.dart';
 import 'package:flutter_restaurant/utill/images.dart';
 import 'package:flutter_restaurant/utill/routes.dart';
 import 'package:flutter_restaurant/utill/styles.dart';
-import 'package:flutter_restaurant/view/base/custom_app_bar.dart';
 import 'package:flutter_restaurant/view/base/custom_button.dart';
 import 'package:flutter_restaurant/view/base/custom_divider.dart';
 import 'package:flutter_restaurant/view/base/custom_snackbar.dart';
 import 'package:flutter_restaurant/view/base/custom_text_field.dart';
 import 'package:flutter_restaurant/view/base/footer_view.dart';
-import 'package:flutter_restaurant/view/base/not_logged_in_screen.dart';
 import 'package:flutter_restaurant/view/base/web_app_bar.dart';
 import 'package:flutter_restaurant/view/screens/address/add_new_address_screen.dart';
-import 'package:flutter_restaurant/view/screens/address/widget/permission_dialog.dart';
 import 'package:flutter_restaurant/view/screens/auth/widget/code_picker_widget.dart';
 import 'package:flutter_restaurant/view/screens/auth/widget/social_login_checkout_widget.dart';
-import 'package:flutter_restaurant/view/screens/auth/widget/social_login_widget.dart';
-import 'package:flutter_restaurant/view/screens/cart/widget/cart_product_widget.dart';
 import 'package:flutter_restaurant/view/screens/checkout/order_successful_guest_screen.dart';
 import 'package:flutter_restaurant/view/screens/checkout/widget/custom_check_box.dart';
 import 'package:flutter_restaurant/view/screens/checkout/widget/delivery_fee_dialog.dart';
@@ -63,6 +54,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:universal_html/html.dart' as html;
 
 class CheckoutScreen extends StatefulWidget {
@@ -93,7 +85,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   //String deliveryAddress = "19-21 King St, ENFIELD, 2136, NSW";
   String deliveryTime = "";
 
-
   //new added
   final FocusNode _firstNameFocus = FocusNode();
   final FocusNode _lastNameFocus = FocusNode();
@@ -114,6 +105,19 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   @override
   void initState() {
+
+    SharedPreferences.getInstance().then((prefs) => {
+      _firstNameController.text = prefs.getString('first_name'),
+      _lastNameController.text = prefs.getString('last_name'),
+      _emailController.text = prefs.getString('email'),
+      _numberController.text = prefs.getString('phone'),
+
+      prefs.remove('first_name'),
+      prefs.remove('last_name'),
+      prefs.remove('email'),
+      prefs.remove('phone')
+    });
+
     _pageController = PageController(initialPage: 0);
     orderAmount = widget.amount;
     super.initState();
@@ -729,7 +733,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                         ),
                                                         onPressed: (){
                                                           TOTALDeliveryFee = orderAmount;
-
+                                                          SharedPreferences.getInstance().then((prefs) => {
+                                                            prefs.setString('first_name', _firstNameController.text),
+                                                            prefs.setString('last_name', _lastNameController.text),
+                                                            prefs.setString('email', _emailController.text),
+                                                            prefs.setString('phone', _numberController.text),
+                                                          });
                                                           _checkPermission(
                                                               context,
                                                               Routes.getAddAddressRoute('checkout', 'add', AddressModel(),'guest'));
@@ -1474,7 +1483,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   ));
                 }
 
-                if(order.orderType=="delivery" && order.addressIndex == -1){
+                if(order.orderType=="delivery" && GuestAddress.isEmpty){
                   showCustomSnackBar('Please select an address', context);
                   return;
                 }
@@ -1488,7 +1497,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   cart: carts,
                   couponDiscountAmount: Provider.of<CouponProvider>(context, listen: false).discount,
                   couponDiscountTitle: widget.couponCode.isNotEmpty ? widget.couponCode : null,
-                  deliveryAddressId: order.orderType=="delivery" ? Provider.of<LocationProvider>(context, listen: false).addressList[order.addressIndex].id : 0,
+                  // deliveryAddressId: order.orderType=="delivery" ? Provider.of<LocationProvider>(context, listen: false).addressList[order.addressIndex].id : 0,
                   orderAmount: double.parse('${(orderAmount).toStringAsFixed(2)}'),
                   orderNote: _noteController.text ?? '',
                   orderType: order.orderType??"",
