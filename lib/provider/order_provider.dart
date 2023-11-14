@@ -304,7 +304,8 @@ class OrderProvider extends ChangeNotifier {
     _allTimeSlots = [];
     //_selectDateSlot = 0;
     int _minutes = 0;
-    DateTime _now = DateTime.now();
+    DateTime _now = DateConverter.now();
+    print(_now);
     for(int index = 0; index < _scheduleTime.length; index++) {
       DateTime _openTime = DateTime(
         _now.year,
@@ -384,15 +385,15 @@ class OrderProvider extends ChangeNotifier {
     _timeSlots = [];
     int _day = 0;
     if(dateIndex == 0) {
-      _day = DateTime.now().weekday;
+      _day = DateConverter.now().weekday;
     }else {
-      _day = DateTime.now().add(Duration(days: 1)).weekday;
+      _day = DateConverter.now().add(Duration(days: 1)).weekday;
     }
     if(_day == 7) {
       _day = 0;
     }
     slots.forEach((slot) {
-      if (_day == slot.day && (dateIndex == 0 ? slot.endTime.isAfter(DateTime.now()) : true)) {
+      if (_day == slot.day && (dateIndex == 0 ? slot.endTime.isAfter(DateConverter.now()) : true)) {
         _timeSlots.add(slot);
       }
     });

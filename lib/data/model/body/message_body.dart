@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../../helper/date_converter.dart';
+
 class MessageBody {
   String id;
   int orderId;
@@ -17,7 +19,7 @@ class MessageBody {
     senderId = json['sender_id'];
     receiverId = json['receiver_id'];
     message = json['message'];
-    time = json['time'] != null ? json['time'].toDate() : DateTime.now();
+    time = json['time'] != null ? json['time'].toDate() : DateConverter.now();
     imageUrls = json['image_urls'].cast<String>();
   }
 

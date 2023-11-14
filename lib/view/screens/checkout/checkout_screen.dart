@@ -1273,7 +1273,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   Container confirmButtonWidget(AuthProvider authProvider,OrderProvider order, LocationProvider address, bool _kmWiseCharge, double _deliveryCharge, BuildContext context) {
-    String _uuid = DateFormat('yyyyMMddHHmmss').format(DateTime.now()).toString();
+    String _uuid = DateFormat('yyyyMMddHHmmss').format(DateConverter.now()).toString();
     return Container(
       width: 1170,
       alignment: Alignment.center,
@@ -1284,13 +1284,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
           if(_isLoggedIn){
             bool _isAvailable = true;
-            DateTime _scheduleStartDate = DateTime.now();
-            DateTime _scheduleEndDate = DateTime.now();
+            DateTime _scheduleStartDate = DateConverter.now();
+            DateTime _scheduleEndDate = DateConverter.now();
             if(order.timeSlots == null || order.timeSlots.length == 0) {
               _isAvailable = false;
             }
             else {
-              DateTime _date = order.selectDateSlot == 0 ? DateTime.now() : DateTime.now().add(Duration(days: 1));
+              DateTime _date = order.selectDateSlot == 0 ? DateConverter.now() : DateConverter.now().add(Duration(days: 1));
               DateTime _startTime = order.timeSlots[order.selectTimeSlot].startTime;
               DateTime _endTime = order.timeSlots[order.selectTimeSlot].endTime;
               _scheduleStartDate = DateTime(_date.year, _date.month, _date.day, _startTime.hour, _startTime.minute+1);
@@ -1416,13 +1416,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               return;
             }else{
               bool _isAvailable = true;
-              DateTime _scheduleStartDate = DateTime.now();
-              DateTime _scheduleEndDate = DateTime.now();
+              DateTime _scheduleStartDate = DateConverter.now();
+              DateTime _scheduleEndDate = DateConverter.now();
               if(order.timeSlots == null || order.timeSlots.length == 0) {
                 _isAvailable = false;
               }
               else {
-                DateTime _date = order.selectDateSlot == 0 ? DateTime.now() : DateTime.now().add(Duration(days: 1));
+                DateTime _date = order.selectDateSlot == 0 ? DateConverter.now() : DateConverter.now().add(Duration(days: 1));
                 DateTime _startTime = order.timeSlots[order.selectTimeSlot].startTime;
                 DateTime _endTime = order.timeSlots[order.selectTimeSlot].endTime;
                 _scheduleStartDate = DateTime(_date.year, _date.month, _date.day, _startTime.hour, _startTime.minute+1);

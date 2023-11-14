@@ -3234,15 +3234,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
     _timeSlots = [];
     int _day = 0;
     if(dateIndex == 0) {
-      _day = DateTime.now().weekday;
+      _day = DateConverter.now().weekday;
     }else {
-      _day = DateTime.now().add(Duration(days: 1)).weekday;
+      _day = DateConverter.now().add(Duration(days: 1)).weekday;
     }
     if(_day == 7) {
       _day = 0;
     }
     slots.forEach((slot) {
-      if (_day == slot.day && (dateIndex == 0 ? slot.endTime.isAfter(DateTime.now()) : true)) {
+      if (_day == slot.day && (dateIndex == 0 ? slot.endTime.isAfter(DateConverter.now()) : true)) {
         _timeSlots.add(slot);
       }
     });
@@ -3266,7 +3266,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
     DateTime _start ;
     DateTime _end ;
 
-    DateTime _now = DateTime.now();
+    DateTime _now = DateConverter.now();
     int _minutes = 0;
 
     int _duration = Provider.of<SplashProvider>(context, listen: false).configModel.scheduleOrderSlotDuration;
@@ -3424,7 +3424,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
                       width: MediaQuery.of(context).size.height * .9,
                       alignment: Alignment.center,
                       child: Text(
-                        "Current Date & Time "+DateTime.now().toString(),
+                        "Current Date & Time "+DateConverter.now().toString(),
                         textAlign: TextAlign.center,
                         style: TextStyle(
                         color: Colors.white,

@@ -13,14 +13,16 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_maps_webservice/places.dart';
 
+import '../helper/date_converter.dart';
+
 class LocationProvider with ChangeNotifier {
   final SharedPreferences sharedPreferences;
   final LocationRepo locationRepo;
 
   LocationProvider({@required this.sharedPreferences, this.locationRepo});
 
-  Position _position = Position(longitude: 0, latitude: 0, timestamp: DateTime.now(), accuracy: 1, altitude: 1, heading: 1, speed: 1, speedAccuracy: 1);
-  Position _pickPosition = Position(longitude: 0, latitude: 0, timestamp: DateTime.now(), accuracy: 1, altitude: 1, heading: 1, speed: 1, speedAccuracy: 1);
+  Position _position = Position(longitude: 0, latitude: 0, timestamp: DateConverter.now(), accuracy: 1, altitude: 1, heading: 1, speed: 1, speedAccuracy: 1);
+  Position _pickPosition = Position(longitude: 0, latitude: 0, timestamp: DateConverter.now(), accuracy: 1, altitude: 1, heading: 1, speed: 1, speedAccuracy: 1);
   bool _loading = false;
   bool get loading => _loading;
   Position get position => _position;
@@ -60,7 +62,7 @@ class LocationProvider with ChangeNotifier {
       _myPosition = Position(
         latitude: double.parse('0'),
         longitude: double.parse('0'),
-        timestamp: DateTime.now(), accuracy: 1, altitude: 1, heading: 1, speed: 1, speedAccuracy: 1,
+        timestamp: DateConverter.now(), accuracy: 1, altitude: 1, heading: 1, speed: 1, speedAccuracy: 1,
       );
     }
     if(fromAddress) {
@@ -90,12 +92,12 @@ class LocationProvider with ChangeNotifier {
       try {
         if (fromAddress) {
           _position = Position(
-            latitude: position.target.latitude, longitude: position.target.longitude, timestamp: DateTime.now(),
+            latitude: position.target.latitude, longitude: position.target.longitude, timestamp: DateConverter.now(),
             heading: 1, accuracy: 1, altitude: 1, speedAccuracy: 1, speed: 1,
           );
         } else {
           _pickPosition = Position(
-            latitude: position.target.latitude, longitude: position.target.longitude, timestamp: DateTime.now(),
+            latitude: position.target.latitude, longitude: position.target.longitude, timestamp: DateConverter.now(),
             heading: 1, accuracy: 1, altitude: 1, speedAccuracy: 1, speed: 1,
           );
         }
@@ -271,7 +273,7 @@ class LocationProvider with ChangeNotifier {
 
     _pickPosition = Position(
       longitude: detail.result.geometry.location.lng, latitude: detail.result.geometry.location.lat,
-      timestamp: DateTime.now(), accuracy: 1, altitude: 1, heading: 1, speed: 1, speedAccuracy: 1,
+      timestamp: DateConverter.now(), accuracy: 1, altitude: 1, heading: 1, speed: 1, speedAccuracy: 1,
     );
 
     _position = _pickPosition;

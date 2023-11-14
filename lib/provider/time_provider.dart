@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_restaurant/data/model/response/order_model.dart';
+import 'package:flutter_restaurant/helper/date_converter.dart';
 import 'package:flutter_restaurant/provider/splash_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -20,11 +21,10 @@ class TimerProvider with ChangeNotifier {
       _orderTime =  DateFormat("yyyy-MM-dd HH:mm").parse('${order.deliveryDate} ${order.deliveryTime}');
     }
 
-    DateTime endTime = _orderTime.toUtc().add(Duration(hours: 11, minutes: int.parse(order.preparationTime)));
+    DateTime endTime = _orderTime.add(Duration(minutes: int.parse(order.preparationTime)));
 
-    DateTime now = DateTime.now().toUtc().add(Duration(hours: 11));
+    DateTime now = DateConverter.now();
 
-    // _duration = DateTime.now().difference(endTime);
     _duration = endTime.difference(now);
     _timer?.cancel();
     _timer = null;
@@ -37,7 +37,8 @@ class TimerProvider with ChangeNotifier {
     });
     if(_duration.isNegative) {
       _duration = Duration();
-    }_duration = endTime.difference(now);
+    }
+    _duration = endTime.difference(now);
 
   }
 

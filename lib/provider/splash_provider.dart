@@ -15,7 +15,7 @@ class SplashProvider extends ChangeNotifier {
 
   ConfigModel _configModel;
   BaseUrls _baseUrls;
-  DateTime _currentTime = DateTime.now();
+  DateTime _currentTime = DateConverter.now();
   PolicyModel _policyModel;
 
 
@@ -54,7 +54,7 @@ class SplashProvider extends ChangeNotifier {
   }
 
   bool isRestaurantClosed(bool today) {
-    DateTime _date = DateTime.now();
+    DateTime _date = DateConverter.now();
     if(!today) {
       _date = _date.add(Duration(days: 1));
     }
@@ -74,7 +74,7 @@ class SplashProvider extends ChangeNotifier {
     if(isRestaurantClosed(true)) {
       return false;
     }
-    int _weekday = DateTime.now().weekday;
+    int _weekday = DateConverter.now().weekday;
     if(_weekday == 7) {
       _weekday = 0;
     }

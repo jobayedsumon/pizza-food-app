@@ -114,5 +114,11 @@ class DateConverter {
     return _weekName;
 }
 
+  static now() {
+    DateTime now = DateTime.now().toUtc().add(Duration(hours: 11));
+    now = DateTime(now.year, now.month, now.day, now.hour, now.minute, now.second);
+    return now;
+  }
+
 
 }
